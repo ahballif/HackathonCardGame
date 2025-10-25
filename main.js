@@ -2,8 +2,8 @@ import MainScene from "./scenes/MainScene.js";
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1000,
+  height: 800,
   backgroundColor: "#222222",
   scene: [MainScene]
 };
