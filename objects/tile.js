@@ -56,7 +56,7 @@ export default class Tile extends Phaser.GameObjects.Container {
         this.placeButton.setDisplaySize(50, 50);
     }
     showPushUpButton(moveCommand) {
-        this.pushUpButton = this.scene.add.image(this.screenx, this.screeny + this.gridheight/2, 'push_up_button')
+        this.pushUpButton = this.scene.add.image(this.screenx, this.screeny + this.gridheight/2.5, 'push_up_button')
             .setInteractive()          // makes it clickable
             .on('pointerdown', () => {
                 moveCommand();
@@ -64,7 +64,7 @@ export default class Tile extends Phaser.GameObjects.Container {
         this.pushUpButton.setDisplaySize(50, 50);
     }
     showPushRightButton (moveCommand) {
-        this.pushRightButton = this.scene.add.image(this.screenx - this.gridwidth/2, this.screeny, 'push_right_button')
+        this.pushRightButton = this.scene.add.image(this.screenx - this.gridwidth/2.5, this.screeny, 'push_right_button')
             .setInteractive()          // makes it clickable
             .on('pointerdown', () => {
                 moveCommand();
@@ -72,7 +72,7 @@ export default class Tile extends Phaser.GameObjects.Container {
         this.pushRightButton.setDisplaySize(50, 50);
     }
     showPushDownButton(moveCommand) {
-        this.pushDownButton = this.scene.add.image(this.screenx, this.screeny - this.gridheight/2, 'push_down_button')
+        this.pushDownButton = this.scene.add.image(this.screenx, this.screeny - this.gridheight/2.5, 'push_down_button')
             .setInteractive()          // makes it clickable
             .on('pointerdown', () => {
                 moveCommand();
@@ -80,7 +80,7 @@ export default class Tile extends Phaser.GameObjects.Container {
         this.pushDownButton.setDisplaySize(50, 50);
     }
     showPushLeftButton (moveCommand) {
-        this.pushLeftButton = this.scene.add.image(this.screenx + this.gridwidth/2, this.screeny, 'push_left_button')
+        this.pushLeftButton = this.scene.add.image(this.screenx + this.gridwidth/2.5, this.screeny, 'push_left_button')
             .setInteractive()          // makes it clickable
             .on('pointerdown', () => {
                 moveCommand();
