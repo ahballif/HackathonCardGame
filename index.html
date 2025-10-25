@@ -2,27 +2,47 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Card Grid Game</title>
+    <title>History Heroes Jam!</title>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
     <script src="data/library.js"></script>
     <script type="module" src="main.js"></script>
+    <style>
+      body {
+        margin: 0;
+        background-color: #111;
+        font-family: sans-serif;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #game-container {
+        margin: 20px 0;
+      }
+
+      #game-container canvas {
+        display: block;
+        border: 2px solid white;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #444;
+      }
+
+      h1, p {
+        margin: 10px;
+      }
+
+    </style>
   </head>
-  <body style="margin:0; background:black;"> <style>
-    body {
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #111;
-    }
 
-    #game-container canvas {
-      display: block;
-      border: 2px solid white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px #444;
-    }
-  </style></body>
+  <body>
+    <!-- Title at top -->
+    <h1>History Heroes Jam!</h1>
+
+    <!-- Phaser game container -->
+    <div id="game-container"></div>
+
+    <!-- Paragraph / instructions at bottom -->
+    <p>This is a two player game. Each player, ..; </p>
+  </body>
 </html>
-
