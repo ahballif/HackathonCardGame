@@ -217,9 +217,16 @@ export default class MainScene extends Phaser.Scene {
   }
   // This calculates if a certain move is legal based on the arrows of the card and the one it is trying to push
  isMoveLegal(cardtype, x, y, pushdirection) {
-  if (pushdirection == 0) return this.grid[y][x].card == null;
-  if (pushdirection == 0 && this.grid[y][x].tile_type != 2) return false;
-
+  if (pushdirection == 0) {
+    if (this.grid[y][x].tile_type != 2) {
+      return false
+    }
+    if (this.grid[y][x].card != null) {
+      return false
+    }
+    return true
+  } else if (this.grid[y][x].card != null) {
+  
   if (pushdirection == 1) {
     for (let yi = y; yi >= -1; yi--) {
       if (yi == -1) return false;
@@ -262,6 +269,8 @@ export default class MainScene extends Phaser.Scene {
       }
     }
     return true;
+  }
+
   }
 
   return false;
