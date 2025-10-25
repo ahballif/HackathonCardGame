@@ -23,13 +23,7 @@ export default class Card extends Phaser.GameObjects.Container {
     scene.add.existing(this);
   }
 
-<<<<<<< Updated upstream
 
-  drawCard(screenx, screeny, width, height) {
-
-  }
-
-=======
   addArrows(push) {
     const directions = ["up", "right", "down", "left"];
     const offsets = {
@@ -50,5 +44,5 @@ export default class Card extends Phaser.GameObjects.Container {
       }
     }
   }
->>>>>>> Stashed changes
+
 }

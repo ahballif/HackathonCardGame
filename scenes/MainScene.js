@@ -25,7 +25,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-<<<<<<< Updated upstream
+
 
 
     let gridHeight = 5
@@ -52,12 +52,14 @@ export default class MainScene extends Phaser.Scene {
 
     this.turnIsP1 = true;
     
-  }
-=======
+  
+
     // Pick a card to visualize
     const example = CARD_LIBRARY[5]; // or random one
     this.add.text(20, 20, "Card Visual Test", { color: "#fff" });
->>>>>>> Stashed changes
+
+   
+
 
     // Create and show card in center
     const card = new Card(this, 400, 400, example);
