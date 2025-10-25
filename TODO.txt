@@ -10,3 +10,6 @@ Right now double arrow cannot push bomb, but bomb can destroy double arrow
 
 
 the tile location might be wrong, but we will see
+
+
+there is no rule that says you can't push onto dirt. Its just that our specific course doesn't allow it. 
