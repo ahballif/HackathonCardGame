@@ -10,7 +10,7 @@ def to_base3(n):
         n //= 3
     
     ternary_string = "".join(ternary_digits[::-1]) if ternary_digits else "0"
-    return ternary_string.zfill(4)
+    return ternary_string.zfill(5)
 
 # --- Generate 81 numbers (0000–2222)
 nums = [to_base3(i) for i in range(81)]

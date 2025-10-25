@@ -1,165 +1,165 @@
 const CARD_LIBRARY = [
   {
+    name: "John Taylor",
+    image: "John Taylor.png",
+    effect: null,
+    push: "00000"
+  },
+  {
+    name: "Thomas S. Monson",
+    image: "Thomas S. Monson.png",
+    effect: null,
+    push: "00010"
+  },
+  {
     name: "Ludwig Van Beethoven",
     image: "Ludwig Van Beethoven.png",
     effect: null,
-    push: "0000"
-  },
-  {
-    name: "Guillaume Dufay",
-    image: "Guillaume Dufay.png",
-    effect: null,
-    push: "0010"
-  },
-  {
-    name: "Ezra Taft Benson",
-    image: "Ezra Taft Benson.png",
-    effect: null,
-    push: "0020"
-  },
-  {
-    name: "Howard W. Hunter",
-    image: "Howard W. Hunter.png",
-    effect: null,
-    push: "0100"
-  },
-  {
-    name: "Albert Einstein",
-    image: "Albert Einstein.png",
-    effect: null,
-    push: "0110"
-  },
-  {
-    name: "Johannes Brahms",
-    image: "Johannes Brahms.png",
-    effect: null,
-    push: "0120"
+    push: "00020"
   },
   {
     name: "Joseph F. Smith",
     image: "Joseph F. Smith.png",
     effect: null,
-    push: "0200"
-  },
-  {
-    name: "Brigham Young",
-    image: "Brigham Young.png",
-    effect: null,
-    push: "0210"
-  },
-  {
-    name: "Dallin H. Oaks",
-    image: "Dallin H. Oaks.png",
-    effect: null,
-    push: "0220"
-  },
-  {
-    name: "Arnold Schoenberg",
-    image: "Arnold Schoenberg.png",
-    effect: null,
-    push: "1000"
-  },
-  {
-    name: "Harold B. Lee",
-    image: "Harold B. Lee.png",
-    effect: null,
-    push: "1010"
-  },
-  {
-    name: "Isaac Newton",
-    image: "Isaac Newton.png",
-    effect: null,
-    push: "1020"
+    push: "00100"
   },
   {
     name: "George Frideric Handel",
     image: "George Frideric Handel.png",
     effect: null,
-    push: "1100"
+    push: "00110"
   },
   {
-    name: "George Albert Smith",
-    image: "George Albert Smith.png",
+    name: "Howard W. Hunter",
+    image: "Howard W. Hunter.png",
     effect: null,
-    push: "1110"
+    push: "00120"
   },
   {
-    name: "Amy Beach",
-    image: "Amy Beach.png",
+    name: "Guillaume Dufay",
+    image: "Guillaume Dufay.png",
     effect: null,
-    push: "1120"
+    push: "00200"
   },
   {
-    name: "Erwin Schrodinger",
-    image: "Erwin Schrodinger.png",
+    name: "Johann Sebastian Bach",
+    image: "Johann Sebastian Bach.png",
     effect: null,
-    push: "1200"
-  },
-  {
-    name: "Richard Wagner",
-    image: "Richard Wagner.png",
-    effect: null,
-    push: "1210"
-  },
-  {
-    name: "Joseph Smith",
-    image: "Joseph Smith.png",
-    effect: null,
-    push: "1220"
-  },
-  {
-    name: "Heber J. Grant",
-    image: "Heber J. Grant.png",
-    effect: null,
-    push: "2000"
+    push: "00210"
   },
   {
     name: "Russell M. Nelson",
     image: "Russell M. Nelson.png",
     effect: null,
-    push: "2010"
+    push: "00220"
   },
   {
-    name: "Niels Bohr",
-    image: "Niels Bohr.png",
+    name: "Felix Mendelssohn",
+    image: "Felix Mendelssohn.png",
     effect: null,
-    push: "2020"
+    push: "01000"
   },
   {
-    name: "Benjamin Britten",
-    image: "Benjamin Britten.png",
+    name: "Gordon B. Hinckley",
+    image: "Gordon B. Hinckley.png",
     effect: null,
-    push: "2100"
+    push: "01010"
   },
   {
-    name: "Antonio Vivaldi",
-    image: "Antonio Vivaldi.png",
+    name: "Antonin Dvorak",
+    image: "Antonin Dvorak.png",
     effect: null,
-    push: "2110"
+    push: "01020"
   },
   {
-    name: "Igor Stravinsky",
-    image: "Igor Stravinsky.png",
+    name: "Wilford Woodruff",
+    image: "Wilford Woodruff.png",
     effect: null,
-    push: "2120"
+    push: "01100"
   },
   {
     name: "Stephen Hawking",
     image: "Stephen Hawking.png",
     effect: null,
-    push: "2200"
+    push: "01110"
+  },
+  {
+    name: "Antonio Vivaldi",
+    image: "Antonio Vivaldi.png",
+    effect: null,
+    push: "01120"
+  },
+  {
+    name: "Joseph Fielding Smith",
+    image: "Joseph Fielding Smith.png",
+    effect: null,
+    push: "01200"
+  },
+  {
+    name: "Erwin Schrodinger",
+    image: "Erwin Schrodinger.png",
+    effect: null,
+    push: "01210"
   },
   {
     name: "David O. McKay",
     image: "David O. McKay.png",
     effect: null,
-    push: "2210"
+    push: "01220"
   },
   {
-    name: "Wolfgang Amadeus Mozart",
-    image: "Wolfgang Amadeus Mozart.png",
+    name: "Igor Stravinsky",
+    image: "Igor Stravinsky.png",
     effect: null,
-    push: "2220"
+    push: "02000"
+  },
+  {
+    name: "George Albert Smith",
+    image: "George Albert Smith.png",
+    effect: null,
+    push: "02010"
+  },
+  {
+    name: "Dallin H. Oaks",
+    image: "Dallin H. Oaks.png",
+    effect: null,
+    push: "02020"
+  },
+  {
+    name: "Albert Einstein",
+    image: "Albert Einstein.png",
+    effect: null,
+    push: "02100"
+  },
+  {
+    name: "Harold B. Lee",
+    image: "Harold B. Lee.png",
+    effect: null,
+    push: "02110"
+  },
+  {
+    name: "Amy Beach",
+    image: "Amy Beach.png",
+    effect: null,
+    push: "02120"
+  },
+  {
+    name: "Benjamin Britten",
+    image: "Benjamin Britten.png",
+    effect: null,
+    push: "02200"
+  },
+  {
+    name: "Johannes Brahms",
+    image: "Johannes Brahms.png",
+    effect: null,
+    push: "02210"
+  },
+  {
+    name: "Ezra Taft Benson",
+    image: "Ezra Taft Benson.png",
+    effect: null,
+    push: "02220"
   },
   {
     name: "Giuseppe Verdi",
@@ -168,98 +168,98 @@ const CARD_LIBRARY = [
     push: "10000"
   },
   {
-    name: "Spencer W. Kimball",
-    image: "Spencer W. Kimball.png",
+    name: "Galileo Galilei",
+    image: "Galileo Galilei.png",
     effect: null,
     push: "10010"
   },
   {
-    name: "Hildegard of Bingen",
-    image: "Hildegard of Bingen.png",
+    name: "Arnold Schoenberg",
+    image: "Arnold Schoenberg.png",
     effect: null,
     push: "10020"
   },
   {
-    name: "Joseph Fielding Smith",
-    image: "Joseph Fielding Smith.png",
+    name: "Wolfgang Amadeus Mozart",
+    image: "Wolfgang Amadeus Mozart.png",
     effect: null,
     push: "10100"
-  },
-  {
-    name: "John Taylor",
-    image: "John Taylor.png",
-    effect: null,
-    push: "10110"
-  },
-  {
-    name: "Wilford Woodruff",
-    image: "Wilford Woodruff.png",
-    effect: null,
-    push: "10120"
-  },
-  {
-    name: ".DS_Store",
-    image: ".DS_Store",
-    effect: null,
-    push: "10200"
   },
   {
     name: "Claudio Monteverdi",
     image: "Claudio Monteverdi.png",
     effect: null,
+    push: "10110"
+  },
+  // {
+  //   name: ".DS_Store",
+  //   image: ".DS_Store",
+  //   effect: null,
+  //   push: "10120"
+  // },
+  {
+    name: "Heber J. Grant",
+    image: "Heber J. Grant.png",
+    effect: null,
+    push: "10200"
+  },
+  {
+    name: "Isaac Newton",
+    image: "Isaac Newton.png",
+    effect: null,
     push: "10210"
   },
   {
-    name: "Felix Mendelssohn",
-    image: "Felix Mendelssohn.png",
+    name: "Hildegard of Bingen",
+    image: "Hildegard of Bingen.png",
     effect: null,
     push: "10220"
   },
   {
-    name: "Johann Sebastian Bach",
-    image: "Johann Sebastian Bach.png",
+    name: "Joseph Smith",
+    image: "Joseph Smith.png",
     effect: null,
     push: "11000"
   },
   {
-    name: "Fanny Mendelssohn Hensel",
-    image: "Fanny Mendelssohn Hensel.png",
+    name: "Richard Wagner",
+    image: "Richard Wagner.png",
     effect: null,
     push: "11010"
   },
   {
-    name: "Thomas S. Monson",
-    image: "Thomas S. Monson.png",
+    name: "Niels Bohr",
+    image: "Niels Bohr.png",
     effect: null,
     push: "11020"
-  },
-  {
-    name: "Antonin Dvorak",
-    image: "Antonin Dvorak.png",
-    effect: null,
-    push: "11100"
-  },
-  {
-    name: "Lorenzo Snow",
-    image: "Lorenzo Snow.png",
-    effect: null,
-    push: "11110"
   },
   {
     name: "Marie Curie",
     image: "Marie Curie.png",
     effect: null,
+    push: "11100"
+  },
+  {
+    name: "Spencer W. Kimball",
+    image: "Spencer W. Kimball.png",
+    effect: null,
+    push: "11110"
+  },
+  {
+    name: "Lorenzo Snow",
+    image: "Lorenzo Snow.png",
+    effect: null,
     push: "11120"
   },
   {
-    name: "Gordon B. Hinckley",
-    image: "Gordon B. Hinckley.png",
+    name: "Fanny Mendelssohn Hensel",
+    image: "Fanny Mendelssohn Hensel.png",
     effect: null,
     push: "11200"
   },
   {
-    name: "Galileo Galilei",
-    image: "Galileo Galilei.png",
+    name: "Brigham Young",
+    image: "Brigham Young.png",
     effect: null,
     push: "11210"
   },
