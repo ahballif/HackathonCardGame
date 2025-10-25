@@ -20,11 +20,16 @@ cards = []
 
 # --- Read available card images
 try:
-    cards = os.listdir(CARDPATH)
+    cards = [
+        f for f in os.listdir(CARDPATH)
+        if os.path.isfile(os.path.join(CARDPATH, f)) and not f.startswith(".")
+    ]
 except FileNotFoundError:
     print(f"Error: Folder '{CARDPATH}' not found.")
 except Exception as e:
     print(f"An error occurred: {e}")
+
+
 
 random.shuffle(cards)
 
@@ -32,7 +37,7 @@ FILENAME = "data/library.js"
 
 # --- Write JS file
 with open(FILENAME, "w", encoding="utf-8") as f:
-    f.write("const CARD_LIBRARY = [\n")
+    f.write("export const CARD_LIBRARY = [\n")
 
     for i, push_code in enumerate(nums):
         if i >= len(cards):
@@ -54,4 +59,4 @@ with open(FILENAME, "w", encoding="utf-8") as f:
             f"  }}{comma}\n"
         )
 
-    f.write("];\n\nexport default CARD_LIBRARY;\n")
+    f.write("];\n")
