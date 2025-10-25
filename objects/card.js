@@ -4,26 +4,12 @@ export default class Card extends Phaser.GameObjects.Container {
     this.scene = scene;
     this.cardData = cardData;
 
-    // Add card image
-    this.cardImage = scene.add.image(0, 0, cardData.name);
-    this.cardImage.setDisplaySize(200, 200);
-    this.add(this.cardImage);
-
-    // Add arrows on top
-    this.addArrows(cardData.push);
-
-    // Optional: name text below
-    // const text = scene.add.text(0, 90, cardData.name, {
-    //   fontSize: "12px",
-    //   color: "#fff",
-    //   align: "center"
-    // }).setOrigin(0.5);
-    // this.add(text);
-
-    scene.add.existing(this);
+    this.drawCard(200, 200);
+    
   }
 
 
+  // this function is called by the drawCard function
   addArrows(push) {
     const directions = ["up", "right", "down", "left"];
     const offsets = {
@@ -43,6 +29,27 @@ export default class Card extends Phaser.GameObjects.Container {
         this.add(arrow);
       }
     }
+  }
+
+
+  drawCard(screenwidth, screenheight) {
+    // Add card image
+    this.cardImage = this.scene.add.image(0, 0, this.cardData.name);
+    this.cardImage.setDisplaySize(screenwidth, screenheight);
+    this.add(this.cardImage);
+
+    // Add arrows on top
+    this.addArrows(this.cardData.push);
+
+    // Optional: name text below
+    // const text = scene.add.text(0, 90, this.cardData.name, {
+    //   fontSize: "12px",
+    //   color: "#fff",
+    //   align: "center"
+    // }).setOrigin(0.5);
+    // this.add(text);
+
+    this.scene.add.existing(this);
   }
 
 }
