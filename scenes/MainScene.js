@@ -35,24 +35,24 @@ export default class MainScene extends Phaser.Scene {
   create() {
     // --- BASIC SETUP ---
     this.turnIsP1 = true;
-    this.nx = 5;
-    this.ny = 5;
+    this.nx = 4;
+    this.ny = 4;
 
     const { width, height } = this.scale;
 
     // Title
-    this.add
-      .text(width / 2, 40, "Card Game View", {
-        color: "#fff",
-        fontSize: "20px",
-      })
-      .setOrigin(0.5);
+    this.add.text(width / 2, 40, "Card Game View", {
+      color: "#fff",
+      fontSize: "20px",
+    }).setOrigin(0.5);
+
+    this.messages = [];
 
     // --- GRID (centered) ---
     const gridWidth = 600;
     const gridHeight = 600;
-    const gridOriginX = width / 2 - gridWidth / 2;
-    const gridOriginY = height / 2 - gridHeight / 2;
+    const gridOriginX = width / 2 - gridWidth / 2 + gridWidth / this.nx / 2;
+    const gridOriginY = height / 2 - gridHeight / 2 + gridHeight / this.ny / 2;
     this.createGrid(gridOriginX, gridOriginY, gridWidth / this.nx, gridHeight / this.ny, 0);
 
 
@@ -67,52 +67,37 @@ export default class MainScene extends Phaser.Scene {
     const centerY = height / 2;
 
     // Player 1 (left)
-    this.createHand(p1hand, leftX, centerY, "vertical", false);
+    this.createHand(p1hand, leftX, centerY, "vertical", false, true);
 
     // Player 2 (right)
     this.createHand(p2hand, rightX, centerY, "vertical", false, false);
   }
 
   // --- HAND CREATION (supports vertical or horizontal) ---
-  createHand(
-    cards,
-    x,
-    centerY,
-    layout = "horizontal",
-    flipped = false,
-    isPlayer1 = true
-  ) {
+  createHand(cards, x, centerY, layout = "horizontal", flipped = false, isPlayer1) {
     const spacing = 150;
     const totalSpan = (cards.length - 1) * spacing;
     const startY = centerY - totalSpan / 2;
 
     cards.forEach((cardData, i) => {
       let card;
-      if (layout === "horizontal") {
-        const posX = x - totalSpan / 2 + i * spacing;
-        card = new Card(this, posX, centerY, cardData, () => {
-          // When this card is clicked
-          if (isPlayer1 == this.turnIsP1) {
-            this.displayTurnButtons(card);
-          } else {
-            console.log("It isn't your turn!");
-            console.log("It isn't your turn!");
-          }
-        });
-      } else {
-        const posY = startY + i * spacing;
-        card = new Card(this, x, posY, cardData, () => {
-          // When this card is clicked
-          if (isPlayer1 == this.turnIsP1) {
-            this.displayTurnButtons(card);
-          } else {
-            console.log("It isn't your turn!");
-            console.log("It isn't your turn!");
-          }
-        });
-      }
-      card.isPlayer1 = isPlayer1;
-
+      
+      const posY = startY + i * spacing;
+      card = new Card(this, x, posY, cardData, () => {
+        // When this card is clicked
+        if (isPlayer1 == this.turnIsP1) {
+          this.displayTurnButtons(card);
+        } else {
+          this.messages = this.messages || [];
+          const text = this.add.text(100, 100, "It's not your turn!", {
+              fontSize: "24px",
+              color: "#ff2828ff"
+          });
+          this.messages.push(text);
+        }
+      }, isPlayer1);
+      
+      
       if (flipped) card.setScale(-1, -1);
     });
   }
@@ -160,18 +145,27 @@ export default class MainScene extends Phaser.Scene {
 
 
   drawNewCard(handx, handy, player1) {
-  let cardData = player1 ? this.p1deck.shift() : this.p2deck.shift();
-
-  let card = new Card(this, handx, handy, cardData, () => {
-    if (player1 == this.turnIsP1) {
-      this.displayTurnButtons(card);
+    // Draws a new card and puts 
+    let cardData = null
+    if (player1) {
+      cardData = this.p1deck.shift();
     } else {
-      console.log("It isn't your turn!");
+      cardData = this.p2deck.shift();
     }
-  });
-
-  card.isPlayer1 = player1;
-}
+    let card = new Card(this, handx, handy, cardData, () => {
+      // When this card is clicked
+      if (player1 == this.turnIsP1) {
+        this.displayTurnButtons(card);
+      } else {
+        this.messages = this.messages || [];
+        const text = this.add.text(100, 100, "It's not your turn!", {
+            fontSize: "24px",
+            color: "#ff2828ff"
+        });
+        this.messages.push(text);
+      }
+    }, player1);
+  }
 
 
   // --- MOVEMENT + RULE LOGIC ---
@@ -224,6 +218,7 @@ export default class MainScene extends Phaser.Scene {
   // This calculates if a certain move is legal based on the arrows of the card and the one it is trying to push
  isMoveLegal(cardtype, x, y, pushdirection) {
   if (pushdirection == 0) return this.grid[y][x].card == null;
+  if (pushdirection == 0 && this.grid[y][x].tile_type != 2) return false;
 
   if (pushdirection == 1) {
     for (let yi = y; yi >= -1; yi--) {
@@ -364,8 +359,8 @@ export default class MainScene extends Phaser.Scene {
                 this.clearAllOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4))
-              this.drawNewCard(selectedCard.x, selectedCard.y, selectedCard.isPlayer1);
               thisTile.showPushLeftButton(() => {
+                this.drawNewCard(selectedCard.x, selectedCard.y, selectedCard.isPlayer1);
                 try {
                   this.movecard(selectedCard, xi, yi, 4);
                 } catch (err) {
@@ -388,5 +383,14 @@ export default class MainScene extends Phaser.Scene {
         thisTile.clearOptionButtons();
       }
     }
+    
+    this.clearAllMessages();
+  }
+
+  clearAllMessages() {
+    for (const txt of this.messages) {
+        txt.destroy();
+    }
+    this.messages = [];
   }
 }
