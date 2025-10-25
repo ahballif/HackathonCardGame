@@ -4,8 +4,14 @@ class MainScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('card', 'assets/card.png');
-    this.load.image('arrow', 'assets/arrow.png');
+    // Load all your card art
+    // this.load.image('arrow', 'assets/arrow.png');
+    // this.load.image('card_cross', 'assets/card_cross.png');
+    // this.load.image('card_corner', 'assets/card_corner.png');
+    // this.load.image('card_bomb', 'assets/card_bomb.png');
+    // this.load.image('card_switch', 'assets/card_switch.png');
+    this.load.image('up', 'assets/up.png');
+
   }
 
   create() {
@@ -16,11 +22,28 @@ class MainScene extends Phaser.Scene {
 
   handleTileClick(x, y) {
     if (!this.grid.canPlace(x, y)) return;
-    const card = new Card(this, x, y, this.turn);
-    this.grid.placeCard(x, y, card);
-    this.grid.tryPush(x, y, card.direction);
 
+    // pick a random card type for now
+    const cardData = Phaser.Utils.Array.GetRandom(CARD_LIBRARY);
+    const card = new Card(this, x, y, this.turn, cardData);
+
+    this.grid.placeCard(x, y, card);
+    this.grid.tryPush(x, y, card.arrows);
+
+    // Run special effect
+    this.runEffect(x, y, card.effect);
+
+    // next player's turn
     this.turn = this.turn === 'red' ? 'blue' : 'red';
     this.turnText.setText(`Turn: ${this.turn}`);
+  }
+
+  runEffect(x, y, effect) {
+    if (!effect) return;
+    if (effect === 'bomb') {
+      this.grid.explode(x, y);
+    } else if (effect === 'switch') {
+      this.grid.switchColorsAround(x, y);
+    }
   }
 }

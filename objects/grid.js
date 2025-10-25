@@ -51,4 +51,35 @@ class Grid {
       }
     }
   }
+  explode(x, y) {
+  const deltas = [
+    [0, 0], [1,0], [-1,0], [0,1], [0,-1]
+  ];
+  for (const [dx, dy] of deltas) {
+    const nx = x + dx, ny = y + dy;
+    if (nx < 0 || ny < 0 || nx >= this.size || ny >= this.size) continue;
+    const cell = this.cells[ny][nx];
+    if (cell.card) {
+      cell.card.destroy();
+      cell.card = null;
+    }
+  }
+}
+
+switchColorsAround(x, y) {
+  const deltas = [
+    [1,0], [-1,0], [0,1], [0,-1]
+  ];
+  for (const [dx, dy] of deltas) {
+    const nx = x + dx, ny = y + dy;
+    if (nx < 0 || ny < 0 || nx >= this.size || ny >= this.size) continue;
+    const cell = this.cells[ny][nx];
+    if (cell.card) {
+      const c = cell.card;
+      c.color = c.color === 'red' ? 'blue' : 'red';
+      c.sprite.setTint(c.color === 'red' ? 0xff4444 : 0x4444ff);
+    }
+  }
+}
+
 }

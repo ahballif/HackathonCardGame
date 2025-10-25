@@ -1,27 +1,40 @@
 class Card {
-  constructor(scene, x, y, color) {
+  constructor(scene, x, y, color, data) {
     this.scene = scene;
     this.color = color;
+    this.name = data.name;
+    this.effect = data.effect;
+    this.arrows = data.arrows;
+    this.imageKey = data.image;
 
     const cell = scene.grid.cells[y][x];
-    this.sprite = scene.add.image(cell.tile.x, cell.tile.y, 'card').setScale(0.5);
+    this.sprite = scene.add.image(cell.tile.x, cell.tile.y, this.imageKey).setScale(0.5);
     this.sprite.setTint(color === 'red' ? 0xff4444 : 0x4444ff);
 
-    const dirs = ['up', 'down', 'left', 'right'];
-    this.direction = Phaser.Utils.Array.GetRandom(dirs);
+    this.arrowSprites = [];
+    this.drawArrows(cell.tile.x, cell.tile.y);
 
-    this.arrow = scene.add.image(cell.tile.x, cell.tile.y, 'arrow').setScale(0.3);
-    this.arrow.setAngle(
-      this.direction === 'up' ? 0 :
-      this.direction === 'right' ? 90 :
-      this.direction === 'down' ? 180 :
-      270
-    );
+    // Optional: label for debugging
+    this.label = scene.add.text(cell.tile.x - 30, cell.tile.y + 40, this.name, { fontSize: 12, color: '#fff' });
   }
 
+//   drawArrows(x, y) {
+//     for (const dir of this.arrows) {
+//       const arrow = this.scene.add.image(x, y, 'arrow').setScale(0.25);
+//       arrow.setAngle(
+//         dir === 'up' ? 0 :
+//         dir === 'right' ? 90 :
+//         dir === 'down' ? 180 :
+//         dir === 'left' ? 270 : 0
+//       );
+//       this.arrowSprites.push(arrow);
+//     }
+//   }
+
   moveTo(x, y) {
+    const targets = [this.sprite, this.label, ...this.arrowSprites];
     this.scene.tweens.add({
-      targets: [this.sprite, this.arrow],
+      targets,
       x, y,
       duration: 200,
       ease: 'Power2'
@@ -30,6 +43,7 @@ class Card {
 
   destroy() {
     this.sprite.destroy();
-    this.arrow.destroy();
+    this.label.destroy();
+    for (const a of this.arrowSprites) a.destroy();
   }
 }
