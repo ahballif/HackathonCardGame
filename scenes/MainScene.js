@@ -130,6 +130,7 @@ export default class MainScene extends Phaser.Scene {
         console.log("It isn't your turn!")
       }
     });
+    card.isPlayer1 = player1;
   }
 
 
@@ -177,15 +178,50 @@ export default class MainScene extends Phaser.Scene {
   }
   // This calculates if a certain move is legal based on the arrows of the card and the one it is trying to push
   isMoveLegal(cardtype, x, y, pushdirection) {
-    const gridcard = this.grid[y][x].card;
-
+    
     // push direction can be 0 for no push, 1 for up, 2 for right, 3 for down, 4 for left
 
-    if (pushdirection == 0) return gridcard == null;
-    if (pushdirection == 1) return Number(cardtype[0]) > Number(gridcard.cardtype[2]);
-    if (pushdirection == 2) return Number(cardtype[1]) > Number(gridcard.cardtype[3]);
-    if (pushdirection == 3) return Number(cardtype[2]) > Number(gridcard.cardtype[0]);
-    if (pushdirection == 4) return Number(cardtype[3]) > Number(gridcard.cardtype[1]);
+    if (pushdirection == 0) return this.grid[y][x].card == null;
+    if (pushdirection == 1) {
+      for (let yi = y; yi >= -1; yi--) {
+        if (yi == -1) return false; // This means it went offf the edge. 
+        if (this.grid[yi][x].card == null) return true;
+        if (Number(cardtype[0]) <= Number(this.grid[yi][x].card.cardtype[2])) {
+          return false
+        }
+      }
+      return true
+    }
+    if (pushdirection == 2) {
+      for (let xi = x; xi <= this.nx; xi++) {
+        if (xi == this.nx) return false; // This means it went offff the edge
+        if (this.grid[y][xi].card == null) return true;
+        if (Number(cardtype[1]) <= Number(this.grid[y][xi].card.cardtype[3])) {
+          return false
+        }
+      }
+      return true
+    }
+    if (pushdirection == 3) {
+      for (let yi = y; yi <= this.ny; yi ++) {
+        if (yi == this.ny) return false; // This means it went off the edge
+        if (this.grid[yi][x].card == null) return true;
+        if (Number(cardtype[2]) <= Number(this.grid[yi][x].card.cardtype[0])) {
+          return false
+        }
+      }
+      return true
+    }
+    if (pushdirection == 4) {
+      for (let xi = x; xi >= -1; xi --) {
+        if (xi == -1) return false; // This means it went off the edge
+        if (this.grid[y][xi].card == null) return true;
+        if (Number(cardtype[3]) <= Number(this.grid[y][xi].card.cardtype[1])) {
+          return false
+        }
+      }
+      return true
+    }
     return false;
   }
 
@@ -243,6 +279,7 @@ export default class MainScene extends Phaser.Scene {
                 this.clearAllOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4))
+              this.drawNewCard(selectedCard.x, selectedCard.y, selectedCard.isPlayer1);
               thisTile.showPushLeftButton(() => {
                 try {
                   this.movecard(selectedCard, xi, yi, 4);
