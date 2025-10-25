@@ -6,6 +6,11 @@ class Card {
     this.cardtype = "0102";
   }
 
+
+  drawCard(screenx, screeny, width, height) {
+
+  }
+
 }
 
 
