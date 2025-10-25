@@ -1,4 +1,4 @@
-export const CARD_LIBRARY = [
+const CARD_LIBRARY = [
   {
     name: "Joseph Smith",
     image: "Joseph Smith.png",

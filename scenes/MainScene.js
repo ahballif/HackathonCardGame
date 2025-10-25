@@ -35,8 +35,8 @@ export default class MainScene extends Phaser.Scene {
   create() {
     // --- BASIC SETUP ---
     this.turnIsP1 = true;
-    this.nx = 5;
-    this.ny = 5;
+    this.nx = 4;
+    this.ny = 4;
 
     const { width, height } = this.scale;
 
@@ -51,8 +51,8 @@ export default class MainScene extends Phaser.Scene {
     // --- GRID (centered) ---
     const gridWidth = 600;
     const gridHeight = 600;
-    const gridOriginX = width / 2 - gridWidth / 2;
-    const gridOriginY = height / 2 - gridHeight / 2;
+    const gridOriginX = width / 2 - gridWidth / 2 + gridWidth / this.nx / 2;
+    const gridOriginY = height / 2 - gridHeight / 2 + gridHeight / this.ny / 2;
     this.createGrid(gridOriginX, gridOriginY, gridWidth / this.nx, gridHeight / this.ny, 0);
 
 
@@ -218,6 +218,7 @@ export default class MainScene extends Phaser.Scene {
   // This calculates if a certain move is legal based on the arrows of the card and the one it is trying to push
  isMoveLegal(cardtype, x, y, pushdirection) {
   if (pushdirection == 0) return this.grid[y][x].card == null;
+  if (pushdirection == 0 && this.grid[y][x].tile_type != 2) return false;
 
   if (pushdirection == 1) {
     for (let yi = y; yi >= -1; yi--) {
