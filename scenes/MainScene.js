@@ -12,6 +12,7 @@ export default class MainScene extends Phaser.Scene {
     this.load.image("arrow_down", "assets/arrow_down.png");
     this.load.image("arrow_left", "assets/arrow_left.png");
     this.load.image("arrow_right", "assets/arrow_right.png");
+    this.load.image("back_tile", "assets/Back Tile.png");
 
     // Optional: if you have double-arrow versions
     this.load.image("arrow_up_double", "assets/arrow_up_double.png");

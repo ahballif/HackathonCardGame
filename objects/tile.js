@@ -27,7 +27,7 @@ export default class Tile extends Phaser.GameObjects.Container {
 
     drawTile() {
         
-        this.tileImage = this.scene.add.image(this.screenx, this.screeny, "Back Tile.png");
+        this.tileImage = this.scene.add.image(this.screenx, this.screeny, "back_tile");
         this.tileImage.setDisplaySize(this.gridwidth, this.gridheight);
 
         this.scene.add.existing(this);
