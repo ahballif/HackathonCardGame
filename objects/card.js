@@ -1,10 +1,12 @@
 export default class Card extends Phaser.GameObjects.Container {
-  constructor(scene, x, y, cardData) {
+  constructor(scene, x, y, cardData, clickFunction) {
     super(scene, x, y);
     this.scene = scene;
     this.cardData = cardData;
 
     this.drawCard(200, 200);
+
+    this.clickFunction = clickFunction; // This is the function that gets called when you click on the card
     
   }
 
@@ -36,6 +38,10 @@ export default class Card extends Phaser.GameObjects.Container {
     // Add card image
     this.cardImage = this.scene.add.image(0, 0, this.cardData.name);
     this.cardImage.setDisplaySize(screenwidth, screenheight);
+    this.cardImage.setInteractive();          // makes it clickable
+    this.cardImage.on('pointerdown', () => {
+      this.clickFunction();
+    });
     this.add(this.cardImage);
 
     // Add arrows on top

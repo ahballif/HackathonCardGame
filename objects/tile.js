@@ -27,11 +27,8 @@ export default class Tile extends Phaser.GameObjects.Container {
     }
 
     drawTile() {
-        let img = "";
-        if (this.tile_type == 2) img = "picnic_tile";
-        else if (this.tile_type == 1) img = "back_tile";
-        else img = "no_play";
-        this.tileImage = this.scene.add.image(this.screenx, this.screeny, img);
+        
+        this.tileImage = this.scene.add.image(this.screenx, this.screeny, "back_tile");
         this.tileImage.setDisplaySize(this.gridwidth*0.9, this.gridheight*0.9);
 
         this.scene.add.existing(this);

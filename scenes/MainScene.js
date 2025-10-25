@@ -43,8 +43,8 @@ export default class MainScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // --- GRID (centered) ---
-    const gridWidth = 300;
-    const gridHeight = 300;
+    const gridWidth = 500;
+    const gridHeight = 500;
     const gridOriginX = width / 2 - gridWidth / 2;
     const gridOriginY = height / 2 - gridHeight / 2;
     this.createGrid(gridOriginX, gridOriginY, gridWidth / this.nx, gridHeight / this.ny);
@@ -65,7 +65,7 @@ export default class MainScene extends Phaser.Scene {
   }
 
   // --- HAND CREATION (supports vertical or horizontal) ---
-  createHand(cards, x, centerY, layout = "horizontal", flipped = false) {
+  createHand(cards, x, centerY, layout = "horizontal", flipped = false, isPlayer1 = true) {
     const spacing = 150;
     const totalSpan = (cards.length - 1) * spacing;
     const startY = centerY - totalSpan / 2;
@@ -74,10 +74,24 @@ export default class MainScene extends Phaser.Scene {
       let card;
       if (layout === "horizontal") {
         const posX = x - totalSpan / 2 + i * spacing;
-        card = new Card(this, posX, centerY, cardData).setInteractive();
+        card = new Card(this, posX, centerY, cardData, () => {
+          // When this card is clicked
+          if (isPlayer1 && this.turnIsP1) {
+            this.displayTurnButtons(card);
+          } else {
+            console.log("It isn't your turn!")
+          }
+        });
       } else {
         const posY = startY + i * spacing;
-        card = new Card(this, x, posY, cardData);
+        card = new Card(this, x, posY, cardData, () => {
+          // When this card is clicked
+          if (isPlayer1 && this.turnIsP1) {
+            this.displayTurnButtons(card);
+          } else {
+            console.log("It isn't your turn!")
+          }
+        });
       }
 
       if (flipped) card.setScale(-1, -1);
@@ -103,16 +117,16 @@ export default class MainScene extends Phaser.Scene {
   // push direction can be 0 for no push, 1 for up, 2 for right, 3 for down, 4 for left 
   // This function assumes the assigned movement is legal.
   movecard(card, newx, newy, pushdirection) {
-    if (grid[newy][newx].card == null) {
+    if (this.grid[newy][newx].card == null) {
         // This means there is no card at that location
-      grid[newy][newx].card = card;
-      card.x = grid[newy][newx].screenx;
-      card.y = grid[newy][newx].screeny;
+      this.grid[newy][newx].card = card;
+      card.x = this.grid[newy][newx].screenx;
+      card.y = this.grid[newy][newx].screeny;
     } else {
-      let nextcard = grid[newy][newx].card;
-      grid[newy][newx].card = card;
-      card.x = grid[newy][newx].screenx;
-      card.y = grid[newy][newx].screeny;
+      let nextcard = this.grid[newy][newx].card;
+      this.grid[newy][newx].card = card;
+      card.x = this.grid[newy][newx].screenx;
+      card.y = this.grid[newy][newx].screeny;
 
       let next_newx = newx;
       let next_newy = newy;
@@ -140,7 +154,7 @@ export default class MainScene extends Phaser.Scene {
   }
   // This calculates if a certain move is legal based on the arrows of the card and the one it is trying to push
   isMoveLegal(cardtype, x, y, pushdirection) {
-    const gridcard = grid[y][x].card;
+    const gridcard = this.grid[y][x].card;
 
     // push direction can be 0 for no push, 1 for up, 2 for right, 3 for down, 4 for left
 
@@ -158,38 +172,49 @@ export default class MainScene extends Phaser.Scene {
   displayTurnButtons(selectedCard) {
     for (let yi = 0; yi < this.ny; yi++) {
       for (let xi = 0; xi < this.nx; xi++) {
-        let thisTile = grid[yi][xi];
+        let thisTile = this.grid[yi][xi];
         if (thisTile.tile_type != 0) {
             // checking each of the 5 possible moves and if it's legal, it displays the button.
           if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 0)) {
             thisTile.showPlaceButton(() => {
               this.movecard(selectedCard, xi, yi, 0);
               this.turnIsP1 = !this.turnIsP1;
+              thisTile.clearOptionButtons();
             });
           } else {
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 1))
               thisTile.showPushUpButton(() => {
                 this.movecard(selectedCard, xi, yi, 1);
                 this.turnIsP1 = !this.turnIsP1;
+                thisTile.clearOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 2))
               thisTile.showPushRightButton(() => {
                 this.movecard(selectedCard, xi, yi, 2);
                 this.turnIsP1 = !this.turnIsP1;
+                thisTile.clearOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 3))
               thisTile.showPushDownButton(() => {
                 this.movecard(selectedCard, xi, yi, 3);
                 this.turnIsP1 = !this.turnIsP1;
+                thisTile.clearOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4))
               thisTile.showPushLeftButton(() => {
                 this.movecard(selectedCard, xi, yi, 4);
                 this.turnIsP1 = !this.turnIsP1;
+                thisTile.clearOptionButtons();
               });
           }
         }
       }
     }
   }
+
+
+  
+
+
+
 }
