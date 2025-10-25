@@ -58,7 +58,9 @@ export default class MainScene extends Phaser.Scene {
     const card = new Card(this, 400, 400, example);
 
 
-    this.createGrid(100, 200, 150, 150, 5, 5);
+    this.nx = 5;
+    this.ny = 5;
+    this.createGrid(100, 200, 150, 150);
   }
 
 
@@ -81,22 +83,25 @@ export default class MainScene extends Phaser.Scene {
   }
 
   // draw the grid
-  createGrid(gridOriginX, gridOriginY, tilewidth, tileheight, nx, ny) {
+  createGrid(gridOriginX, gridOriginY, tilewidth, tileheight) {
 
     const grid = [];
-      for (let r = 0; r < ny; r++) {
+      for (let r = 0; r < this.ny; r++) {
         const row = [];
-        for (let c = 0; c < nx; c++) {
+        for (let c = 0; c < this.nx; c++) {
           row.push(new Tile(this, gridOriginX, gridOriginY, c, r, tilewidth, tileheight)); // or whatever initial value you want
         }
         grid.push(row);
       }
+    this.grid = grid;
 
 
   }
 
 
 
+  // This does recursion to calculate the movement of all the cards when you push a card. 
+  // This function is called by the buttons that are displayed by the tiles (see below. )
   movecard(card, newx, newy, pushdirection) {
     // push direction can be 0 for no push, 1 for up, 2 for right, 3 for down, 4 for left
 
@@ -139,6 +144,7 @@ export default class MainScene extends Phaser.Scene {
     }
   }
 
+  // This calculates if a certain move is legal based on the arrows of the card and the one it is trying to push
   isMoveLegal(cardtype, x, y, pushdirection) {
 
     // push direction can be 0 for no push, 1 for up, 2 for right, 3 for down, 4 for left
@@ -157,6 +163,52 @@ export default class MainScene extends Phaser.Scene {
       return (NUmber(cardtype[3]) > Number(gridcard.cardtype[1]));
     }
     return false
+  }
+
+  // This iterates through all the grid tiles and then if a legal move is available it tells the tile to display the button
+  // that triggers the move. If the button is clicked, it moves the card and switches to the other player's turn. 
+  displayTurnButtons(selectedCard) {
+    for (yi = 0; yi < this.ny; yi ++) {
+      for (xi = 0; xi < this.nx; xi ++) {
+        let thisTile = grid[yi][xi]
+        if (thisTile.tile_type != 0) { // we can't place anything on a nonplayable tile
+
+          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 0)) {
+            thisTile.showPlaceButton(() => {
+              this.movecard(selectedCard, xi, yi, 0);
+              this.turnIsP1 = !this.turnIsP1;
+            });
+          }
+          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 1)) {
+            thisTile.showPushUpButton(() => {
+              this.movecard(selectedCard, xi, yi, 1);
+              this.turnIsP1 = !this.turnIsP1;
+            });
+          }
+          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 2)) {
+            thisTile.showPushRightButton(() => {
+              this.movecard(selectedCard, xi, yi, 2);
+              this.turnIsP1 = !this.turnIsP1;
+            });
+          }
+          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 3)) {
+            thisTile.showPushDownButton(() => {
+              this.movecard(selectedCard, xi, yi, 3);
+              this.turnIsP1 = !this.turnIsP1;
+            });
+          }
+          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4)) {
+            thisTile.showPushLeftButton(() => {
+              this.movecard(selectedCard, xi, yi, 4);
+              this.turnIsP1 = !this.turnIsP1;
+            });
+          }
+
+        }
+
+
+      }
+    } 
   }
 
 }
