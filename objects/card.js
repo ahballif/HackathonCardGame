@@ -4,10 +4,13 @@ export default class Card extends Phaser.GameObjects.Container {
     this.scene = scene;
     this.cardData = cardData;
 
-    this.drawCard(200, 200);
+    this.cardtype = cardData.push;
+    this.isPlayer1 = true;
+
+    this.drawCard(100, 100);
 
     this.clickFunction = clickFunction; // This is the function that gets called when you click on the card
-    
+
   }
 
 

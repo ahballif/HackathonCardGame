@@ -43,15 +43,17 @@ export default class MainScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // --- GRID (centered) ---
-    const gridWidth = 500;
-    const gridHeight = 500;
+    const gridWidth = 600;
+    const gridHeight = 600;
     const gridOriginX = width / 2 - gridWidth / 2;
     const gridOriginY = height / 2 - gridHeight / 2;
     this.createGrid(gridOriginX, gridOriginY, gridWidth / this.nx, gridHeight / this.ny);
 
     // --- PLAYERS ---
-    const p1hand = Phaser.Utils.Array.Shuffle(CARD_LIBRARY).slice(0, 3);
-    const p2hand = Phaser.Utils.Array.Shuffle(CARD_LIBRARY).slice(3, 6);
+    this.p1deck = Phaser.Utils.Array.Shuffle(CARD_LIBRARY).splice(0, 16);
+    this.p2deck = Phaser.Utils.Array.Shuffle(CARD_LIBRARY).splice(0, 16);
+    const p1hand = this.p1deck.splice(0, 3);
+    const p2hand = this.p2deck.splice(0, 3);
 
     const leftX = 150;
     const rightX = width - 150;
@@ -61,7 +63,7 @@ export default class MainScene extends Phaser.Scene {
     this.createHand(p1hand, leftX, centerY, "vertical", false);
 
     // Player 2 (right)
-    this.createHand(p2hand, rightX, centerY, "vertical", false);
+    this.createHand(p2hand, rightX, centerY, "vertical", false, false);
   }
 
   // --- HAND CREATION (supports vertical or horizontal) ---
@@ -76,7 +78,7 @@ export default class MainScene extends Phaser.Scene {
         const posX = x - totalSpan / 2 + i * spacing;
         card = new Card(this, posX, centerY, cardData, () => {
           // When this card is clicked
-          if (isPlayer1 && this.turnIsP1) {
+          if (isPlayer1 == this.turnIsP1) {
             this.displayTurnButtons(card);
           } else {
             console.log("It isn't your turn!")
@@ -86,13 +88,14 @@ export default class MainScene extends Phaser.Scene {
         const posY = startY + i * spacing;
         card = new Card(this, x, posY, cardData, () => {
           // When this card is clicked
-          if (isPlayer1 && this.turnIsP1) {
+          if (isPlayer1 == this.turnIsP1) {
             this.displayTurnButtons(card);
           } else {
             console.log("It isn't your turn!")
           }
         });
       }
+      card.isPlayer1 = isPlayer1;
 
       if (flipped) card.setScale(-1, -1);
     });
@@ -111,6 +114,25 @@ export default class MainScene extends Phaser.Scene {
     this.grid = grid;
   }
 
+  drawNewCard(handx, handy, player1) {
+    // Draws a new card and puts 
+    let cardData = null
+    if (player1) {
+      cardData = this.p1deck.shift();
+    } else {
+      cardData = this.p2deck.shift();
+    }
+    let card = new Card(this, handx, handy, cardData, () => {
+      // When this card is clicked
+      if (player1 == this.turnIsP1) {
+        this.displayTurnButtons(card);
+      } else {
+        console.log("It isn't your turn!")
+      }
+    });
+  }
+
+
   // --- MOVEMENT + RULE LOGIC ---
   // This does recursion to calculate the movement of all the cards when you push a card. 
   // This function is called by the buttons that are displayed by the tiles (see below. ) movecard(card, newx, newy, pushdirection) { 
@@ -122,12 +144,13 @@ export default class MainScene extends Phaser.Scene {
       this.grid[newy][newx].card = card;
       card.x = this.grid[newy][newx].screenx;
       card.y = this.grid[newy][newx].screeny;
+      card.clickFunction = () => {}; // remove the ability to click it again. 
     } else {
       let nextcard = this.grid[newy][newx].card;
       this.grid[newy][newx].card = card;
       card.x = this.grid[newy][newx].screenx;
       card.y = this.grid[newy][newx].screeny;
-
+      card.clickFunction = () => {}; // remove the ability to click it again. 
       let next_newx = newx;
       let next_newy = newy;
 
@@ -177,34 +200,58 @@ export default class MainScene extends Phaser.Scene {
             // checking each of the 5 possible moves and if it's legal, it displays the button.
           if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 0)) {
             thisTile.showPlaceButton(() => {
-              this.movecard(selectedCard, xi, yi, 0);
+              this.drawNewCard(selectedCard.x, selectedCard.y, selectedCard.isPlayer1);
+              this.movecard(selectedCard, xi, yi, 0); // This one doesn't need a try catch
               this.turnIsP1 = !this.turnIsP1;
-              thisTile.clearOptionButtons();
+              this.clearAllOptionButtons();
             });
           } else {
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 1))
               thisTile.showPushUpButton(() => {
-                this.movecard(selectedCard, xi, yi, 1);
+                this.drawNewCard(selectedCard.x, selectedCard.y, selectedCard.isPlayer1);
+                try {
+                  this.movecard(selectedCard, xi, yi, 1);
+                } catch (err) {
+                  thisTile.pushUpButton.destroy();
+                  thisTile.pushUpButton = null;
+                }
                 this.turnIsP1 = !this.turnIsP1;
-                thisTile.clearOptionButtons();
+                this.clearAllOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 2))
               thisTile.showPushRightButton(() => {
-                this.movecard(selectedCard, xi, yi, 2);
+                this.drawNewCard(selectedCard.x, selectedCard.y, selectedCard.isPlayer1);
+                try {
+                  this.movecard(selectedCard, xi, yi, 2);
+                } catch (err) {
+                  thisTile.pushRightButton.destroy();
+                  thisTile.pushRightButton = null;
+                }
                 this.turnIsP1 = !this.turnIsP1;
-                thisTile.clearOptionButtons();
+                this.clearAllOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 3))
               thisTile.showPushDownButton(() => {
-                this.movecard(selectedCard, xi, yi, 3);
+                this.drawNewCard(selectedCard.x, selectedCard.y, selectedCard.isPlayer1);
+                try {
+                  this.movecard(selectedCard, xi, yi, 3);
+                } catch (err) {
+                  thisTile.pushDownButton.destroy();
+                  thisTile.pushDownButton = null;
+                }
                 this.turnIsP1 = !this.turnIsP1;
-                thisTile.clearOptionButtons();
+                this.clearAllOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4))
               thisTile.showPushLeftButton(() => {
-                this.movecard(selectedCard, xi, yi, 4);
+                try {
+                  this.movecard(selectedCard, xi, yi, 4);
+                } catch (err) {
+                  thisTile.pushLeftButton.destroy();
+                  thisTile.pushLeftButton = null;
+                }
                 this.turnIsP1 = !this.turnIsP1;
-                thisTile.clearOptionButtons();
+                this.clearAllOptionButtons();
               });
           }
         }
@@ -213,8 +260,13 @@ export default class MainScene extends Phaser.Scene {
   }
 
 
-  
-
-
+  clearAllOptionButtons() {
+    for (let yi = 0; yi < this.ny; yi++) {
+      for (let xi = 0; xi < this.nx; xi++) {
+        let thisTile = this.grid[yi][xi];
+        thisTile.clearOptionButtons();
+      }
+    }
+  }
 
 }

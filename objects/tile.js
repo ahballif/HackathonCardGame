@@ -55,7 +55,7 @@ export default class Tile extends Phaser.GameObjects.Container {
             });
         this.placeButton.setDisplaySize(50, 50);
     }
-    showPushUpButton() {
+    showPushUpButton(moveCommand) {
         this.pushUpButton = this.scene.add.image(this.screenx, this.screeny + this.gridheight/2, 'push_up_button')
             .setInteractive()          // makes it clickable
             .on('pointerdown', () => {
@@ -63,7 +63,7 @@ export default class Tile extends Phaser.GameObjects.Container {
             });
         this.pushUpButton.setDisplaySize(50, 50);
     }
-    showPushRightButton () {
+    showPushRightButton (moveCommand) {
         this.pushRightButton = this.scene.add.image(this.screenx - this.gridwidth/2, this.screeny, 'push_right_button')
             .setInteractive()          // makes it clickable
             .on('pointerdown', () => {
@@ -71,7 +71,7 @@ export default class Tile extends Phaser.GameObjects.Container {
             });
         this.pushRightButton.setDisplaySize(50, 50);
     }
-    showPushDownButton() {
+    showPushDownButton(moveCommand) {
         this.pushDownButton = this.scene.add.image(this.screenx, this.screeny - this.gridheight/2, 'push_down_button')
             .setInteractive()          // makes it clickable
             .on('pointerdown', () => {
@@ -79,7 +79,7 @@ export default class Tile extends Phaser.GameObjects.Container {
             });
         this.pushDownButton.setDisplaySize(50, 50);
     }
-    showPushLeftButton () {
+    showPushLeftButton (moveCommand) {
         this.pushLeftButton = this.scene.add.image(this.screenx + this.gridwidth/2, this.screeny, 'push_left_button')
             .setInteractive()          // makes it clickable
             .on('pointerdown', () => {
@@ -92,6 +92,26 @@ export default class Tile extends Phaser.GameObjects.Container {
         if (this.placeButton != null) {
             this.placeButton.destroy();
             this.placeButton = null;
+        }
+
+        if (this.pushUpButton != null) {
+            this.pushUpButton.destroy();
+            this.pushUpButton = null;
+        }
+
+        if (this.pushRightButton != null) {
+            this.pushRightButton.destroy();
+            this.pushRightButton = null;
+        }
+
+        if (this.pushDownButton != null) {
+            this.pushDownButton.destroy();
+            this.pushDownButton = null;
+        }
+
+        if (this.pushLeftButton != null) {
+            this.pushLeftButton.destroy();
+            this.pushLeftButton = null;
         }
         
 
