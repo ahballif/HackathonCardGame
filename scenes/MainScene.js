@@ -1,20 +1,31 @@
-class MainScene extends Phaser.Scene {
+import Card from "../objects/card.js";
+
+export default class MainScene extends Phaser.Scene {
   constructor() {
-    super('MainScene');
+    super("MainScene");
   }
 
   preload() {
-    // Load all your card art
-    // this.load.image('arrow', 'assets/arrow.png');
-    // this.load.image('card_cross', 'assets/card_cross.png');
-    // this.load.image('card_corner', 'assets/card_corner.png');
-    // this.load.image('card_bomb', 'assets/card_bomb.png');
-    // this.load.image('card_switch', 'assets/card_switch.png');
-    this.load.image('up', 'assets/up.png');
+    // Load arrows
+    this.load.image("arrow_up", "assets/arrow_up.png");
+    this.load.image("arrow_down", "assets/arrow_down.png");
+    this.load.image("arrow_left", "assets/arrow_left.png");
+    this.load.image("arrow_right", "assets/arrow_right.png");
 
+    // Optional: if you have double-arrow versions
+    this.load.image("arrow_up_double", "assets/arrow_up_double.png");
+    this.load.image("arrow_down_double", "assets/arrow_down_double.png");
+    this.load.image("arrow_left_double", "assets/arrow_left_double.png");
+    this.load.image("arrow_right_double", "assets/arrow_right_double.png");
+
+    // Load card images from folder
+    CARD_LIBRARY.forEach(card => {
+      this.load.image(card.name, `Cards/${card.image}`);
+    });
   }
 
   create() {
+<<<<<<< Updated upstream
 
 
     let gridHeight = 5
@@ -42,31 +53,13 @@ class MainScene extends Phaser.Scene {
     this.turnIsP1 = true;
     
   }
+=======
+    // Pick a card to visualize
+    const example = CARD_LIBRARY[5]; // or random one
+    this.add.text(20, 20, "Card Visual Test", { color: "#fff" });
+>>>>>>> Stashed changes
 
-  handleTileClick(x, y) {
-    if (!this.grid.canPlace(x, y)) return;
-
-    // pick a random card type for now
-    const cardData = Phaser.Utils.Array.GetRandom(CARD_LIBRARY);
-    const card = new Card(this, x, y, this.turn, cardData);
-
-    this.grid.placeCard(x, y, card);
-    this.grid.tryPush(x, y, card.arrows);
-
-    // Run special effect
-    this.runEffect(x, y, card.effect);
-
-    // next player's turn
-    this.turn = this.turn === 'red' ? 'blue' : 'red';
-    this.turnText.setText(`Turn: ${this.turn}`);
-  }
-
-  runEffect(x, y, effect) {
-    if (!effect) return;
-    if (effect === 'bomb') {
-      this.grid.explode(x, y);
-    } else if (effect === 'switch') {
-      this.grid.switchColorsAround(x, y);
-    }
+    // Create and show card in center
+    const card = new Card(this, 400, 400, example);
   }
 }
