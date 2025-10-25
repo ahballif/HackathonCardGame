@@ -38,6 +38,9 @@ export default class MainScene extends Phaser.Scene {
     CARD_LIBRARY.forEach((card) => {
       this.load.image(card.name, `Cards/${card.image}`);
     });
+
+    this.load.image("gem", "assets/Gem.png")
+
   }
 
   create() {
@@ -49,7 +52,7 @@ export default class MainScene extends Phaser.Scene {
     const { width, height } = this.scale;
 
     // Title
-    this.add.text(width / 2, 40, "Card Game View", {
+    this.add.text(width / 2, 40, "History Hero's Picnic Wrestle!", {
       color: "#fff",
       fontSize: "20px",
     }).setOrigin(0.5);
@@ -79,7 +82,41 @@ export default class MainScene extends Phaser.Scene {
 
     // Player 2 (right)
     this.createHand(p2hand, rightX, centerY, "vertical", false, false);
+
+
+    // Create the Gem
+    // Pick a random X between 0 and nx-1
+    this.gemLocationX = Math.round(Math.random()) + 1;
+    this.gemLocationY = Math.round(Math.random()) + 1;
+
+    // this.gemLocationX = Math.floor(Math.random() * this.nx);
+
+    // // Pick a random Y between 0 and ny-1
+    // this.gemLocationY = Math.floor(Math.random() * this.ny);
+
+    // // Re-roll if it’s a corner
+    // while (
+    //     (this.gemLocationX === 0 && this.gemLocationY === 0) ||                         // top-left
+    //     (this.gemLocationX === this.nx - 1 && this.gemLocationY === 0) ||               // top-right
+    //     (this.gemLocationX === 0 && this.gemLocationY === this.ny - 1) ||               // bottom-left
+    //     (this.gemLocationX === this.nx - 1 && this.gemLocationY === this.ny - 1)       // bottom-right
+    // ) {
+    //     this.gemLocationX = Math.floor(Math.random() * this.nx);
+    //     this.gemLocationY = Math.floor(Math.random() * this.ny);
+    // }
+
+    console.log(this.gemLocationX, this.gemLocationY);
+
+    
+    this.gemImage = this.add.image(this.grid[this.gemLocationY][this.gemLocationX].screenx,
+                                   this.grid[this.gemLocationY][this.gemLocationX].screeny, "gem");
+    this.gemImage.setDisplaySize(100, 100);
+    this.gemImage.setDepth(5);
+
+
   }
+
+
 
   // --- HAND CREATION (supports vertical or horizontal) ---
   createHand(cards, x, centerY, layout = "horizontal", flipped = false, isPlayer1) {
@@ -227,9 +264,15 @@ export default class MainScene extends Phaser.Scene {
   }
   // This calculates if a certain move is legal based on the arrows of the card and the one it is trying to push
  isMoveLegal(cardtype, x, y, pushdirection) {
-  if (pushdirection == 0) return this.grid[y][x].card == null;
-  if (pushdirection == 0 && this.grid[y][x].tile_type != 2) return false;
-
+  if (this.grid[y][x].tile_type == 2) {
+  if (pushdirection == 0) {
+    
+    if (this.grid[y][x].card != null) {
+      return false
+    }
+    return true
+  } else if (this.grid[y][x].card != null) {
+  
   if (pushdirection == 1) {
     for (let yi = y; yi >= -1; yi--) {
       if (yi == -1) return false;
@@ -274,6 +317,9 @@ export default class MainScene extends Phaser.Scene {
     return true;
   }
 
+  }
+}
+
   return false;
 }
 
@@ -303,6 +349,7 @@ export default class MainScene extends Phaser.Scene {
               this.movecard(selectedCard, xi, yi, 0); // This one doesn't need a try catch
               this.turnIsP1 = !this.turnIsP1;
               this.clearAllOptionButtons();
+              this.calculateWinCondition();
             });
           } else {
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 1))
@@ -325,6 +372,7 @@ export default class MainScene extends Phaser.Scene {
                 }
                 this.turnIsP1 = !this.turnIsP1;
                 this.clearAllOptionButtons();
+                this.calculateWinCondition();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 2))
               thisTile.showPushRightButton(() => {
@@ -346,6 +394,7 @@ export default class MainScene extends Phaser.Scene {
                 }
                 this.turnIsP1 = !this.turnIsP1;
                 this.clearAllOptionButtons();
+                this.calculateWinCondition();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 3))
               thisTile.showPushDownButton(() => {
@@ -367,6 +416,7 @@ export default class MainScene extends Phaser.Scene {
                 }
                 this.turnIsP1 = !this.turnIsP1;
                 this.clearAllOptionButtons();
+                this.calculateWinCondition();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4))
               thisTile.showPushLeftButton(() => {
@@ -379,6 +429,7 @@ export default class MainScene extends Phaser.Scene {
                 }
                 this.turnIsP1 = !this.turnIsP1;
                 this.clearAllOptionButtons();
+                this.calculateWinCondition();
               });
           }
         }
@@ -403,4 +454,59 @@ export default class MainScene extends Phaser.Scene {
     }
     this.messages = [];
   }
+
+  calculateWinCondition() {
+    console.log('calculating')
+    for (let yi = 0; yi < this.ny; yi++) {
+      for (let xi = 0; xi < this.nx; xi++) {
+        if (this.grid[yi][xi].card == null && this.grid[yi][xi].tile_type == 2) return false
+      }
+    }
+    console.log('The game should be over')
+    // We made it through all the key tiles, so now calculate the winner
+    console.log(this.grid[this.gemLocationY][this.gemLocationX].card)
+    if (this.grid[this.gemLocationY][this.gemLocationX].card == null) {
+      this.endGame('Its a Tie!')
+    } else if (this.grid[this.gemLocationY][this.gemLocationX].card.isPlayer1) {
+      this.endGame('Player 1 Wins!')
+    } else {
+      this.endGame('Player 2 Wins!')
+    }
+    
+    return true
+  }
+
+
+  endGame(message) {
+    // Show the big message
+    const endText = this.add.text(400, 250, message, {
+        fontSize: '70px',
+        fontStyle: 'bold',
+        color: '#ffeb3b',
+        stroke: '#000',
+        strokeThickness: 8
+    }).setOrigin(0.5);
+
+    // Add a restart button under it
+    const restartButton = this.add.text(400, 400, "Restart", {
+        fontSize: '50px',
+        fontStyle: 'bold',
+        color: '#ffffff',
+        backgroundColor: '#0000ff',
+        padding: { x: 20, y: 10 }
+    }).setOrigin(0.5).setInteractive();
+
+    // Make it clickable
+    restartButton.on('pointerdown', () => {
+        window.location.reload();  // Reloads the page
+    });
+
+    // Optional: hover effect
+    restartButton.on('pointerover', () => restartButton.setStyle({ fill: '#ff0' }));
+    restartButton.on('pointerout', () => restartButton.setStyle({ fill: '#fff' }));
+}
+
+
+
+
 }
