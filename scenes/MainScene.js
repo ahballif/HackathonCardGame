@@ -302,6 +302,9 @@ export default class MainScene extends Phaser.Scene {
  isMoveLegal(cardtype, x, y, pushdirection) {
   if (this.grid[y][x].tile_type == 2) {
   if (pushdirection == 0) {
+    if (y == this.gemLocationY && x == this.gemLocationX) {
+      return false
+    }
     
     if (this.grid[y][x].card != null) {
       return false
