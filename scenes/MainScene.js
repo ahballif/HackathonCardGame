@@ -15,7 +15,7 @@ class MainScene extends Phaser.Scene {
   }
 
   create() {
-    this.grid = new Grid(this, 3, 150);
+    this.grid = new Grid(this, 3, 300);
     this.turn = 'red';
     this.turnText = this.add.text(50, 50, 'Turn: Red', { fontSize: 24, color: '#fff' });
   }

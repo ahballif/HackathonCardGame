@@ -1,18 +1,30 @@
 const CARD_LIBRARY = [
   {
-    name: "Arrow Cross",
-    image: "card_cross",
+    name: "Martin Luther King Jr",
+    image: "MLK",
     effect: null,
+    canPushUp: 1,
+    canPushRight: 1,
+    canPushDown: 1,
+    canPushLeft: 0
   },
   {
-    name: "Corner Push",
-    image: "card_corner",
-    effect: null
+    name: "Stravinsky",
+    image: "stravinsky",
+    effect: null,
+    canPushUp: 0,
+    canPushRight: 1,
+    canPushDown: 0,
+    canPushLeft: 0
   },
   {
     name: "Bomb",
     image: "card_bomb",
-    effect: "bomb"
+    effect: "bomb",
+    canPushUp: 1,
+    canPushRight: 0,
+    canPushDown: 0,
+    canPushLeft: 0
   },
   {
     name: "Color Switch",
@@ -20,7 +32,7 @@ const CARD_LIBRARY = [
     effect: "switch"
   },
   {
-    name: "Only up",
+    name: "only up",
     image: "up",
     effect: null
   }
