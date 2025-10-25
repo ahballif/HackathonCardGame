@@ -26,6 +26,14 @@ export default class MainScene extends Phaser.Scene {
     this.load.image("arrow_left_double", "assets/arrow_left_double_new.png");
     this.load.image("arrow_right_double", "assets/arrow_right_double_new.png");
 
+
+    this.load.audio("ld", "assets/audio/LDS audio.wav");
+    this.load.audio("ci", "assets/audio/Civil Rights audio.wav");
+    this.load.audio("ff", "assets/audio/Founding Fathers audio.wav");
+    this.load.audio("co", "assets/audio/Composers audio.wav");
+
+
+
     // Load card images from folder
     CARD_LIBRARY.forEach((card) => {
       this.load.image(card.name, `Cards/${card.image}`);
@@ -86,6 +94,8 @@ export default class MainScene extends Phaser.Scene {
       card = new Card(this, x, posY, cardData, () => {
         // When this card is clicked
         if (isPlayer1 == this.turnIsP1) {
+        //play card audio
+        this.sound.play(card.effect);
           this.displayTurnButtons(card);
         } else {
           this.messages = this.messages || [];

@@ -3,7 +3,7 @@ export default class Card extends Phaser.GameObjects.Container {
     super(scene, x, y);
     this.scene = scene;
     this.cardData = cardData;
-
+    this.effect = cardData.effect;
     this.cardtype = cardData.push;
     this.isPlayer1 = isPlayer1;
 

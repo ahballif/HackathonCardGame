@@ -1,8 +1,8 @@
-const CARD_LIBRARY = [
+export const CARD_LIBRARY = [
   {
     name: "Joseph Smith",
     image: "Joseph Smith.png",
-    effect: null,
+    effect: "ld",
     push: "00000"
   },
   {
@@ -14,19 +14,19 @@ const CARD_LIBRARY = [
   {
     name: "Nephi",
     image: "Nephi.png",
-    effect: null,
+    effect: "ld",
     push: "00020"
   },
   {
     name: "Gordon B. Hinckley",
     image: "Gordon B. Hinckley.png",
-    effect: null,
+    effect: "ld",
     push: "00100"
   },
   {
     name: "Giuseppe Verdi",
     image: "Giuseppe Verdi.png",
-    effect: null,
+    effect: "co",
     push: "00110"
   },
   {
