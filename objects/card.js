@@ -6,19 +6,19 @@ export default class Card extends Phaser.GameObjects.Container {
 
     // Add card image
     this.cardImage = scene.add.image(0, 0, cardData.name);
-    this.cardImage.setDisplaySize(100, 100);
+    this.cardImage.setDisplaySize(200, 200);
     this.add(this.cardImage);
 
     // Add arrows on top
     this.addArrows(cardData.push);
 
     // Optional: name text below
-    const text = scene.add.text(0, 90, cardData.name, {
-      fontSize: "12px",
-      color: "#fff",
-      align: "center"
-    }).setOrigin(0.5);
-    this.add(text);
+    // const text = scene.add.text(0, 90, cardData.name, {
+    //   fontSize: "12px",
+    //   color: "#fff",
+    //   align: "center"
+    // }).setOrigin(0.5);
+    // this.add(text);
 
     scene.add.existing(this);
   }

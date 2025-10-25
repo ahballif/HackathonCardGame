@@ -1,3 +1,9 @@
 Do we need to preload all the images?
 
 Make function to make sure the hand is filled with 3 cards. 
+
+
+Need to add the change color line in moveCard to be correct
+
+fix the rules for if a card can push a bomb or not. 
+Right now double arrow cannot push bomb, but bomb can destroy double arrow
