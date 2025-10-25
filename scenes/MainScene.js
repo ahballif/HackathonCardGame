@@ -110,12 +110,17 @@ export default class MainScene extends Phaser.Scene {
     if (grid[newy][newx].card == null) {
       // This means there is no card at that location
       grid[newy][newx].card = card;
+      card.x = grid[newy][newx].screenx;
+      card.y = grid[newy][newx].screeny;
 
     } else {
       // This means there is a card at that location, so we must use the push
 
       let nextcard = grid[newy][newx].card; // we are going to call move card on this later
       grid[newy][newx].card = card;
+      card.x = grid[newy][newx].screenx;
+      card.y = grid[newy][newx].screeny;
+
       let next_newx = newx;
       let next_newy = newy;
 
@@ -160,7 +165,7 @@ export default class MainScene extends Phaser.Scene {
     } else if (pushdirection == 3) {
       return (Number(cardtype[2]) > Number(gridcard.cardtype[0]));
     } else if (pushdirection == 4) {
-      return (NUmber(cardtype[3]) > Number(gridcard.cardtype[1]));
+      return (Number(cardtype[3]) > Number(gridcard.cardtype[1]));
     }
     return false
   }
@@ -173,35 +178,38 @@ export default class MainScene extends Phaser.Scene {
         let thisTile = grid[yi][xi]
         if (thisTile.tile_type != 0) { // we can't place anything on a nonplayable tile
 
+
+          // checking each of the 5 possible moves and if it's legal, it displays the button. 
           if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 0)) {
             thisTile.showPlaceButton(() => {
               this.movecard(selectedCard, xi, yi, 0);
               this.turnIsP1 = !this.turnIsP1;
             });
-          }
-          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 1)) {
-            thisTile.showPushUpButton(() => {
-              this.movecard(selectedCard, xi, yi, 1);
-              this.turnIsP1 = !this.turnIsP1;
-            });
-          }
-          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 2)) {
-            thisTile.showPushRightButton(() => {
-              this.movecard(selectedCard, xi, yi, 2);
-              this.turnIsP1 = !this.turnIsP1;
-            });
-          }
-          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 3)) {
-            thisTile.showPushDownButton(() => {
-              this.movecard(selectedCard, xi, yi, 3);
-              this.turnIsP1 = !this.turnIsP1;
-            });
-          }
-          if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4)) {
-            thisTile.showPushLeftButton(() => {
-              this.movecard(selectedCard, xi, yi, 4);
-              this.turnIsP1 = !this.turnIsP1;
-            });
+          } else {
+            if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 1)) {
+              thisTile.showPushUpButton(() => {
+                this.movecard(selectedCard, xi, yi, 1);
+                this.turnIsP1 = !this.turnIsP1;
+              });
+            }
+            if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 2)) {
+              thisTile.showPushRightButton(() => {
+                this.movecard(selectedCard, xi, yi, 2);
+                this.turnIsP1 = !this.turnIsP1;
+              });
+            }
+            if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 3)) {
+              thisTile.showPushDownButton(() => {
+                this.movecard(selectedCard, xi, yi, 3);
+                this.turnIsP1 = !this.turnIsP1;
+              });
+            }
+            if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4)) {
+              thisTile.showPushLeftButton(() => {
+                this.movecard(selectedCard, xi, yi, 4);
+                this.turnIsP1 = !this.turnIsP1;
+              });
+            }
           }
 
         }

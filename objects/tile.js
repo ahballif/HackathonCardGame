@@ -44,7 +44,9 @@ export default class Tile extends Phaser.GameObjects.Container {
     }
 
 
-    // the possible move buttons
+    // the possible move buttons. 
+
+    // These buttons only display the image relative to this tile, but the actual rule calculations are done in MainScene. 
     showPlaceButton(moveCommand) {
         this.placeButton = this.scene.add.image(this.screenx, this.screeny, 'place_button')
             .setInteractive()          // makes it clickable
