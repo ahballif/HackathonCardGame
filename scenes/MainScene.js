@@ -2,6 +2,7 @@ import Card from "../objects/card.js";
 import Tile from "../objects/tile.js";
 import { TILE_MAP } from "../data/maps.js";
 
+
 export default class MainScene extends Phaser.Scene {
   constructor() {
     super("MainScene");
@@ -95,6 +96,7 @@ export default class MainScene extends Phaser.Scene {
             this.displayTurnButtons(card);
           } else {
             console.log("It isn't your turn!");
+            console.log("It isn't your turn!");
           }
         });
       } else {
@@ -105,6 +107,7 @@ export default class MainScene extends Phaser.Scene {
             this.displayTurnButtons(card);
           } else {
             console.log("It isn't your turn!");
+            console.log("It isn't your turn!");
           }
         });
       }
@@ -114,7 +117,9 @@ export default class MainScene extends Phaser.Scene {
     });
   }
 
+
   // --- GRID CREATION ---
+
   createGrid(gridOriginX, gridOriginY, tileWidth, tileHeight, mapIndex = 0) {
     const mapData = TILE_MAP[mapIndex].map;
     const rows = mapData.length;
@@ -123,68 +128,56 @@ export default class MainScene extends Phaser.Scene {
     const grid = [];
 
     for (let r = 0; r < rows; r++) {
-      const row = [];
-      for (let c = 0; c < cols; c++) {
+        const row = [];
+        for (let c = 0; c < cols; c++) {
         const tileInfo = mapData[r][c];
 
-        // Create tile
-        const tile = new Tile(
-          this,
-          gridOriginX,
-          gridOriginY,
-          c,
-          r,
-          tileWidth,
-          tileHeight
-        );
-
-        // Assign type and texture
-        tile.type = tileInfo.type; // "dirt", "grass", or "picnic"
-        tile.tile_type = tileInfo.playable; // optional compatibility with your existing code
+        const tile = new Tile(this, gridOriginX, gridOriginY, c, r, tileWidth, tileHeight);
+        tile.type = tileInfo.type;
+        tile.tile_type = tileInfo.playable;
         tile.occupied = tileInfo.occupied || false;
         tile.card = tileInfo.card || null;
 
-        // Change texture based on tile type
         switch (tileInfo.type) {
-          case "dirt":
+            case "dirt":
             tile.tileImage.setTexture("no_play");
             break;
-          case "grass":
+            case "grass":
             tile.tileImage.setTexture("back_tile");
             break;
-          case "picnic":
+            case "picnic":
             tile.tileImage.setTexture("picnic_tile");
             break;
         }
 
         row.push(tile);
-      }
-      grid.push(row);
+        }
+        grid.push(row);
     }
 
     this.grid = grid;
-  }
+    }
+
 
   drawNewCard(handx, handy, player1) {
-    // Draws a new card and puts
-    let cardData = null;
-    if (player1) {
-      cardData = this.p1deck.shift();
+  let cardData = player1 ? this.p1deck.shift() : this.p2deck.shift();
+
+  let card = new Card(this, handx, handy, cardData, () => {
+    if (player1 == this.turnIsP1) {
+      this.displayTurnButtons(card);
     } else {
-      cardData = this.p2deck.shift();
+      console.log("It isn't your turn!");
     }
-    let card = new Card(this, handx, handy, cardData, () => {
-      // When this card is clicked
-      if (player1 == this.turnIsP1) {
-        this.displayTurnButtons(card);
-      } else {
-        console.log("It isn't your turn!");
-      }
-    });
-    card.isPlayer1 = player1;
-  }
+  });
+
+  card.isPlayer1 = player1;
+}
+
 
   // --- MOVEMENT + RULE LOGIC ---
+  // This does recursion to calculate the movement of all the cards when you push a card.
+  // This function is called by the buttons that are displayed by the tiles (see below. ) movecard(card, newx, newy, pushdirection) {
+  // push direction can be 0 for no push, 1 for up, 2 for right, 3 for down, 4 for left
   // This does recursion to calculate the movement of all the cards when you push a card.
   // This function is called by the buttons that are displayed by the tiles (see below. ) movecard(card, newx, newy, pushdirection) {
   // push direction can be 0 for no push, 1 for up, 2 for right, 3 for down, 4 for left
@@ -192,9 +185,11 @@ export default class MainScene extends Phaser.Scene {
   movecard(card, newx, newy, pushdirection) {
     if (this.grid[newy][newx].card == null) {
       // This means there is no card at that location
+      // This means there is no card at that location
       this.grid[newy][newx].card = card;
       card.x = this.grid[newy][newx].screenx;
       card.y = this.grid[newy][newx].screeny;
+      card.clickFunction = () => {}; // remove the ability to click it again.
       card.clickFunction = () => {}; // remove the ability to click it again.
     } else {
       let nextcard = this.grid[newy][newx].card;
@@ -227,66 +222,58 @@ export default class MainScene extends Phaser.Scene {
     }
   }
   // This calculates if a certain move is legal based on the arrows of the card and the one it is trying to push
-  isMoveLegal(cardtype, x, y, pushdirection) {
-    
-    // push direction can be 0 for no push, 1 for up, 2 for right, 3 for down, 4 for left
+ isMoveLegal(cardtype, x, y, pushdirection) {
+  if (pushdirection == 0) return this.grid[y][x].card == null;
 
-<<<<<<< Updated upstream
-    if (pushdirection == 0) return this.grid[y][x].card == null;
-    if (pushdirection == 1) {
-      for (let yi = y; yi >= -1; yi--) {
-        if (yi == -1) return false; // This means it went offf the edge. 
-        if (this.grid[yi][x].card == null) return true;
-        if (Number(cardtype[0]) <= Number(this.grid[yi][x].card.cardtype[2])) {
-          return false
-        }
+  if (pushdirection == 1) {
+    for (let yi = y; yi >= -1; yi--) {
+      if (yi == -1) return false;
+      if (this.grid[yi][x].card == null) return true;
+      if (Number(cardtype[0]) <= Number(this.grid[yi][x].card.cardtype[2])) {
+        return false;
       }
-      return true
     }
-    if (pushdirection == 2) {
-      for (let xi = x; xi <= this.nx; xi++) {
-        if (xi == this.nx) return false; // This means it went offff the edge
-        if (this.grid[y][xi].card == null) return true;
-        if (Number(cardtype[1]) <= Number(this.grid[y][xi].card.cardtype[3])) {
-          return false
-        }
-      }
-      return true
-    }
-    if (pushdirection == 3) {
-      for (let yi = y; yi <= this.ny; yi ++) {
-        if (yi == this.ny) return false; // This means it went off the edge
-        if (this.grid[yi][x].card == null) return true;
-        if (Number(cardtype[2]) <= Number(this.grid[yi][x].card.cardtype[0])) {
-          return false
-        }
-      }
-      return true
-    }
-    if (pushdirection == 4) {
-      for (let xi = x; xi >= -1; xi --) {
-        if (xi == -1) return false; // This means it went off the edge
-        if (this.grid[y][xi].card == null) return true;
-        if (Number(cardtype[3]) <= Number(this.grid[y][xi].card.cardtype[1])) {
-          return false
-        }
-      }
-      return true
-    }
-=======
-    if (pushdirection == 0) return gridcard == null;
-    if (pushdirection == 1)
-      return Number(cardtype[0]) > Number(gridcard.cardtype[2]);
-    if (pushdirection == 2)
-      return Number(cardtype[1]) > Number(gridcard.cardtype[3]);
-    if (pushdirection == 3)
-      return Number(cardtype[2]) > Number(gridcard.cardtype[0]);
-    if (pushdirection == 4)
-      return Number(cardtype[3]) > Number(gridcard.cardtype[1]);
->>>>>>> Stashed changes
-    return false;
+    return true;
   }
 
+  if (pushdirection == 2) {
+    for (let xi = x; xi <= this.nx; xi++) {
+      if (xi == this.nx) return false;
+      if (this.grid[y][xi].card == null) return true;
+      if (Number(cardtype[1]) <= Number(this.grid[y][xi].card.cardtype[3])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  if (pushdirection == 3) {
+    for (let yi = y; yi <= this.ny; yi++) {
+      if (yi == this.ny) return false;
+      if (this.grid[yi][x].card == null) return true;
+      if (Number(cardtype[2]) <= Number(this.grid[yi][x].card.cardtype[0])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  if (pushdirection == 4) {
+    for (let xi = x; xi >= -1; xi--) {
+      if (xi == -1) return false;
+      if (this.grid[y][xi].card == null) return true;
+      if (Number(cardtype[3]) <= Number(this.grid[y][xi].card.cardtype[1])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  return false;
+}
+
+
+  // This iterates through all the grid tiles and then if a legal move is available it tells the tile to display the button
   // This iterates through all the grid tiles and then if a legal move is available it tells the tile to display the button
   // that triggers the move. If the button is clicked, it moves the card and switches to the other player's turn.
 
@@ -303,6 +290,11 @@ export default class MainScene extends Phaser.Scene {
                 selectedCard.y,
                 selectedCard.isPlayer1
               );
+              this.drawNewCard(
+                selectedCard.x,
+                selectedCard.y,
+                selectedCard.isPlayer1
+              );
               this.movecard(selectedCard, xi, yi, 0); // This one doesn't need a try catch
               this.turnIsP1 = !this.turnIsP1;
               this.clearAllOptionButtons();
@@ -310,6 +302,11 @@ export default class MainScene extends Phaser.Scene {
           } else {
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 1))
               thisTile.showPushUpButton(() => {
+                this.drawNewCard(
+                  selectedCard.x,
+                  selectedCard.y,
+                  selectedCard.isPlayer1
+                );
                 this.drawNewCard(
                   selectedCard.x,
                   selectedCard.y,
@@ -331,6 +328,11 @@ export default class MainScene extends Phaser.Scene {
                   selectedCard.y,
                   selectedCard.isPlayer1
                 );
+                this.drawNewCard(
+                  selectedCard.x,
+                  selectedCard.y,
+                  selectedCard.isPlayer1
+                );
                 try {
                   this.movecard(selectedCard, xi, yi, 2);
                 } catch (err) {
@@ -342,6 +344,11 @@ export default class MainScene extends Phaser.Scene {
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 3))
               thisTile.showPushDownButton(() => {
+                this.drawNewCard(
+                  selectedCard.x,
+                  selectedCard.y,
+                  selectedCard.isPlayer1
+                );
                 this.drawNewCard(
                   selectedCard.x,
                   selectedCard.y,
