@@ -19,6 +19,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.image("picnic_tile", "assets/Picnic Playable.png");
     this.load.image("wood1", "assets/Wood playable 1.png");
     this.load.image("wood2", "assets/Wood Playable 2.png");
+    this.load.audio("bg", "assets/audio/Background audio.wav");
+
 
     // Optional: double-arrow versions
     this.load.image("arrow_up_double", "assets/arrow_up_double_new.png");
@@ -31,6 +33,8 @@ export default class MainScene extends Phaser.Scene {
     this.load.audio("ci", "assets/audio/Civil Rights audio.wav");
     this.load.audio("ff", "assets/audio/Founding Fathers audio.wav");
     this.load.audio("co", "assets/audio/Composers audio.wav");
+    this.load.audio("ph", "assets/audio/Physicist audio.wav");
+    
 
 
 
@@ -45,6 +49,8 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     // --- BASIC SETUP ---
+    this.music = this.sound.add("bg", { loop: true, volume: 0.5 });
+    this.music.play();
     this.turnIsP1 = true;
     this.nx = 4;
     this.ny = 4;
@@ -132,6 +138,8 @@ export default class MainScene extends Phaser.Scene {
         // When this card is clicked
         if (isPlayer1 == this.turnIsP1) {
         //play card audio
+        let sfx = card.effect
+        // this.fadeMusicForEffect(sfx, 1500); // fade for 1.5s effect
         this.sound.play(card.effect);
           this.displayTurnButtons(card);
         } else {
@@ -148,6 +156,32 @@ export default class MainScene extends Phaser.Scene {
       if (flipped) card.setScale(-1, -1);
     });
   }
+  fadeMusicForEffect(sfxKey, duration = 1000) {
+  const sfx = this.sound.add(sfxKey);
+  const fadeTime = 300; // fade in/out speed (ms)
+  const originalVolume = this.bgMusic.volume;
+
+  // Fade down the background music
+  this.tweens.add({
+    targets: this.bgMusic,
+    volume: originalVolume * 0.3, // reduce to 30%
+    duration: fadeTime,
+    onComplete: () => {
+      // Play the sound effect
+      sfx.play();
+
+      // When the SFX finishes, fade the music back up
+      sfx.once("complete", () => {
+        this.tweens.add({
+          targets: this.bgMusic,
+          volume: originalVolume,
+          duration: fadeTime,
+        });
+      });
+    },
+  });
+}
+
 
 
   // --- GRID CREATION ---
