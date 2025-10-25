@@ -21,10 +21,10 @@ export default class Card extends Phaser.GameObjects.Container {
 
   const directions = ["up", "right", "down", "left"];
   const offsets = {
-    up: [0, -cardH * 0.45],
-    right: [cardW * 0.38, 0],
-    down: [0, cardH * 0.45],
-    left: [-cardW * 0.38, 0]
+    up: [0, -cardH * 0.55],
+    right: [cardW * 0.48, 0],
+    down: [0, cardH * 0.55],
+    left: [-cardW * 0.48, 0]
   };
 
   for (let i = 0; i < 4; i++) {
