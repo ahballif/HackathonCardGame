@@ -124,13 +124,13 @@ export default class MainScene extends Phaser.Scene {
 
 
     // other stuff
-    this.add.text(width-200, 100, "Player 2 Cards", {
+    this.add.text(width-200, 150, "Player 2 Cards", {
         fontSize: '24px',
         fontStyle: 'bold',
         color: '#6f95ffff'
     })
 
-    this.add.text(0, 100, "Player 1 Cards", {
+    this.add.text(0, 150, "Player 1 Cards", {
         fontSize: '24px',
         fontStyle: 'bold',
         color: '#ff6161ff'
@@ -160,7 +160,7 @@ export default class MainScene extends Phaser.Scene {
           this.displayTurnButtons(card);
         } else {
           this.messages = this.messages || [];
-          const text = this.add.text(100, 100, "It's not your turn!", {
+          const text = this.add.text(350, 80, "It's not your turn!", {
               fontSize: "24px",
               color: "#ff2828ff"
           });
@@ -255,7 +255,7 @@ export default class MainScene extends Phaser.Scene {
         this.displayTurnButtons(card);
       } else {
         this.messages = this.messages || [];
-        const text = this.add.text(100, 100, "It's not your turn!", {
+        const text = this.add.text(350, 80, "It's not your turn!", {
             fontSize: "24px",
             color: "#ff2828ff"
         });
