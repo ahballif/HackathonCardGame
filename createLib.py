@@ -3,11 +3,14 @@ import os, random
 def to_base3(n):
     """Convert n to a 4-digit base-3 string."""
     ternary_digits = []
+    ternary_digits.append("0")
     while n > 0:
         ternary_digits.append(str(n % 3))
+        
         n //= 3
+    
     ternary_string = "".join(ternary_digits[::-1]) if ternary_digits else "0"
-    return ternary_string.zfill(4)
+    return ternary_string.zfill(5)
 
 # --- Generate 81 numbers (0000–2222)
 nums = [to_base3(i) for i in range(81)]
@@ -25,7 +28,7 @@ except Exception as e:
 
 random.shuffle(cards)
 
-FILENAME = "data/library2.js"
+FILENAME = "data/library.js"
 
 # --- Write JS file
 with open(FILENAME, "w", encoding="utf-8") as f:
