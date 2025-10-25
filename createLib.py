@@ -1,50 +1,54 @@
+import os, random
+
 def to_base3(n):
-    if n == 0:
-        return "0"  # Base case for 0
-
-    is_negative = False
-    if n < 0:
-        is_negative = True
-        n = abs(n)  # Work with the absolute value for conversion
-
+    """Convert n to a 4-digit base-3 string."""
     ternary_digits = []
     while n > 0:
-        remainder = n % 3
-        ternary_digits.append(str(remainder))
-        n //= 3  # Integer division
+        ternary_digits.append(str(n % 3))
+        n //= 3
+    ternary_string = "".join(ternary_digits[::-1]) if ternary_digits else "0"
+    return ternary_string.zfill(4)
 
-    # Reverse the list of digits to get the correct order
-    ternary_string = "".join(ternary_digits[::-1])
+# --- Generate 81 numbers (0000–2222)
+nums = [to_base3(i) for i in range(81)]
 
-    if is_negative:
-        return "-" + ternary_string
-    else:
-        return ternary_string
+CARDPATH = "Cards/"
+cards = []
 
-nums = []
-results = []
-for i in range(81):
-    nums.append(to_base3(i))
-print(nums)
+# --- Read available card images
+try:
+    cards = os.listdir(CARDPATH)
+except FileNotFoundError:
+    print(f"Error: Folder '{CARDPATH}' not found.")
+except Exception as e:
+    print(f"An error occurred: {e}")
 
-# for number in nums:
-#     result = 0
-#     for digit in number:
-#         result += int(digit)
-#     results.append(result)
+random.shuffle(cards)
 
-# count=[0 for i in range(9)]
-# for res in results:
-#     count[res] += 1
+FILENAME = "data/library2.js"
 
-# print(results)
+# --- Write JS file
+with open(FILENAME, "w", encoding="utf-8") as f:
+    f.write("const CARD_LIBRARY = [\n")
 
-# print(count)
+    for i, push_code in enumerate(nums):
+        if i >= len(cards):
+            card = "card_not_found.png"
+        else:
+            card = cards[i]
 
-FILENAME = "data/library.js"
+        name = os.path.splitext(card)[0]
 
-with open(FILENAME,'w') as f:
-    f.write('const CARD_LIBRARY = [\n')
-    for number in nums:
-        f.write('{\nname: "filename", \nimage: "filename", \neffect: null,\npush: '+ number +'\n},')
-    f.write(']')
+        # Add comma only if not last element
+        comma = "," if i < len(nums) - 1 else ""
+
+        f.write(
+            f"  {{\n"
+            f'    name: "{name}",\n'
+            f'    image: "{card}",\n'
+            f'    effect: null,\n'
+            f'    push: "{push_code}"\n'
+            f"  }}{comma}\n"
+        )
+
+    f.write("];\n\nexport default CARD_LIBRARY;\n")

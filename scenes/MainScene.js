@@ -15,9 +15,32 @@ class MainScene extends Phaser.Scene {
   }
 
   create() {
-    this.grid = new Grid(this, 3, 150);
-    this.turn = 'red';
-    this.turnText = this.add.text(50, 50, 'Turn: Red', { fontSize: 24, color: '#fff' });
+
+
+    let gridHeight = 5
+    let gridWidth = 5
+
+    
+    // set up the board 
+
+    const grid = [];
+    for (let r = 0; r < gridHeight; r++) {
+      const row = [];
+      for (let c = 0; c < gridWidth; c++) {
+        row.push(0); // or whatever initial value you want
+      }
+      grid.push(row);
+    }
+
+    // set up the players
+
+    const p1deck = [] // deck of all unflipped cards
+    const p1hand = []
+    const p2deck = []
+    const p2hand = []
+
+    this.turnIsP1 = true;
+    
   }
 
   handleTileClick(x, y) {
