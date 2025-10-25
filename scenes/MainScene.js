@@ -14,12 +14,15 @@ export default class MainScene extends Phaser.Scene {
     this.load.image("arrow_down", "assets/arrow_down_new.png");
     this.load.image("arrow_left", "assets/arrow_left_new.png");
     this.load.image("arrow_right", "assets/arrow_right_new.png");
-    this.load.image("back_tile", "assets/Back Tile.png");
+    this.load.image("back_tile", "assets/Big Back Tile.png");
     this.load.image("no_play", "assets/Non-Playable.png");
     this.load.image("picnic_tile", "assets/Picnic Playable.png");
     this.load.image("wood1", "assets/Wood playable 1.png");
     this.load.image("wood2", "assets/Wood Playable 2.png");
     this.load.audio("bg", "assets/audio/Background audio.wav");
+    this.load.audio("win", "assets/audio/Win audio.wav");
+    this.load.audio("credits","assets/audio/pausebetter.mp3")
+
 
 
     // Optional: double-arrow versions
@@ -120,6 +123,20 @@ export default class MainScene extends Phaser.Scene {
     this.gemImage.setDepth(5);
 
 
+    // other stuff
+    this.add.text(width-200, 100, "Player 2 Cards", {
+        fontSize: '24px',
+        fontStyle: 'bold',
+        color: '#6f95ffff'
+    })
+
+    this.add.text(0, 100, "Player 1 Cards", {
+        fontSize: '24px',
+        fontStyle: 'bold',
+        color: '#ff6161ff'
+    })
+
+
   }
 
 
@@ -137,9 +154,8 @@ export default class MainScene extends Phaser.Scene {
       card = new Card(this, x, posY, cardData, () => {
         // When this card is clicked
         if (isPlayer1 == this.turnIsP1) {
-        //play card audio
-        let sfx = card.effect
-        // this.fadeMusicForEffect(sfx, 1500); // fade for 1.5s effect
+        
+        //play sound
         this.sound.play(card.effect);
           this.displayTurnButtons(card);
         } else {
@@ -300,6 +316,9 @@ export default class MainScene extends Phaser.Scene {
  isMoveLegal(cardtype, x, y, pushdirection) {
   if (this.grid[y][x].tile_type == 2) {
   if (pushdirection == 0) {
+    if (y == this.gemLocationY && x == this.gemLocationX) {
+      return false
+    }
     
     if (this.grid[y][x].card != null) {
       return false
@@ -512,6 +531,8 @@ export default class MainScene extends Phaser.Scene {
 
 
   endGame(message) {
+    this.sound.stopAll();
+    this.sound.play("win");
     // Show the big message
     const endText = this.add.text(400, 250, message, {
         fontSize: '70px',
@@ -538,6 +559,8 @@ export default class MainScene extends Phaser.Scene {
     // Optional: hover effect
     restartButton.on('pointerover', () => restartButton.setStyle({ fill: '#ff0' }));
     restartButton.on('pointerout', () => restartButton.setStyle({ fill: '#fff' }));
+    this.music = this.sound.add("credits", { loop: true, volume: 0.5 });
+    this.music.play({ delay: 2 });
 }
 
 
