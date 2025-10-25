@@ -61,7 +61,7 @@ export default class MainScene extends Phaser.Scene {
     this.createHand(p1hand, leftX, centerY, "vertical", false);
 
     // Player 2 (right)
-    this.createHand(p2hand, rightX, centerY, "vertical", false);
+    this.createHand(p2hand, rightX, centerY, "vertical", false, false);
   }
 
   // --- HAND CREATION (supports vertical or horizontal) ---
@@ -76,7 +76,7 @@ export default class MainScene extends Phaser.Scene {
         const posX = x - totalSpan / 2 + i * spacing;
         card = new Card(this, posX, centerY, cardData, () => {
           // When this card is clicked
-          if (isPlayer1 && this.turnIsP1) {
+          if (isPlayer1 == this.turnIsP1) {
             this.displayTurnButtons(card);
           } else {
             console.log("It isn't your turn!")
@@ -86,7 +86,7 @@ export default class MainScene extends Phaser.Scene {
         const posY = startY + i * spacing;
         card = new Card(this, x, posY, cardData, () => {
           // When this card is clicked
-          if (isPlayer1 && this.turnIsP1) {
+          if (isPlayer1 == this.turnIsP1) {
             this.displayTurnButtons(card);
           } else {
             console.log("It isn't your turn!")
@@ -122,12 +122,13 @@ export default class MainScene extends Phaser.Scene {
       this.grid[newy][newx].card = card;
       card.x = this.grid[newy][newx].screenx;
       card.y = this.grid[newy][newx].screeny;
+      card.clickFunction = () => {}; // remove the ability to click it again. 
     } else {
       let nextcard = this.grid[newy][newx].card;
       this.grid[newy][newx].card = card;
       card.x = this.grid[newy][newx].screenx;
       card.y = this.grid[newy][newx].screeny;
-
+      card.clickFunction = () => {}; // remove the ability to click it again. 
       let next_newx = newx;
       let next_newy = newy;
 
@@ -170,6 +171,7 @@ export default class MainScene extends Phaser.Scene {
   // that triggers the move. If the button is clicked, it moves the card and switches to the other player's turn.
 
   displayTurnButtons(selectedCard) {
+    console.log(selectedCard.cardtype)
     for (let yi = 0; yi < this.ny; yi++) {
       for (let xi = 0; xi < this.nx; xi++) {
         let thisTile = this.grid[yi][xi];
@@ -179,32 +181,32 @@ export default class MainScene extends Phaser.Scene {
             thisTile.showPlaceButton(() => {
               this.movecard(selectedCard, xi, yi, 0);
               this.turnIsP1 = !this.turnIsP1;
-              thisTile.clearOptionButtons();
+              this.clearAllOptionButtons();
             });
           } else {
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 1))
               thisTile.showPushUpButton(() => {
                 this.movecard(selectedCard, xi, yi, 1);
                 this.turnIsP1 = !this.turnIsP1;
-                thisTile.clearOptionButtons();
+                this.clearAllOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 2))
               thisTile.showPushRightButton(() => {
                 this.movecard(selectedCard, xi, yi, 2);
                 this.turnIsP1 = !this.turnIsP1;
-                thisTile.clearOptionButtons();
+                this.clearAllOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 3))
               thisTile.showPushDownButton(() => {
                 this.movecard(selectedCard, xi, yi, 3);
                 this.turnIsP1 = !this.turnIsP1;
-                thisTile.clearOptionButtons();
+                this.clearAllOptionButtons();
               });
             if (this.isMoveLegal(selectedCard.cardtype, xi, yi, 4))
               thisTile.showPushLeftButton(() => {
                 this.movecard(selectedCard, xi, yi, 4);
                 this.turnIsP1 = !this.turnIsP1;
-                thisTile.clearOptionButtons();
+                this.clearAllOptionButtons();
               });
           }
         }
@@ -213,7 +215,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
 
-  
+  clearAllOptionButtons() {
+    for (let yi = 0; yi < this.ny; yi++) {
+      for (let xi = 0; xi < this.nx; xi++) {
+        let thisTile = this.grid[yi][xi];
+        thisTile.clearOptionButtons();
+      }
+    }
+  }
 
 
 
