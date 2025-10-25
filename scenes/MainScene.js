@@ -8,17 +8,17 @@ export default class MainScene extends Phaser.Scene {
 
   preload() {
     // Load arrows
-    this.load.image("arrow_up", "assets/arrow_up.png");
-    this.load.image("arrow_down", "assets/arrow_down.png");
-    this.load.image("arrow_left", "assets/arrow_left.png");
-    this.load.image("arrow_right", "assets/arrow_right.png");
+    this.load.image("arrow_up", "assets/arrow_up_new.png");
+    this.load.image("arrow_down", "assets/arrow_down_new.png");
+    this.load.image("arrow_left", "assets/arrow_left_new.png");
+    this.load.image("arrow_right", "assets/arrow_right_new.png");
     this.load.image("back_tile", "assets/Back Tile.png");
 
     // Optional: if you have double-arrow versions
-    this.load.image("arrow_up_double", "assets/arrow_up_double.png");
-    this.load.image("arrow_down_double", "assets/arrow_down_double.png");
-    this.load.image("arrow_left_double", "assets/arrow_left_double.png");
-    this.load.image("arrow_right_double", "assets/arrow_right_double.png");
+    this.load.image("arrow_up_double", "assets/arrow_up_double_new.png");
+    this.load.image("arrow_down_double", "assets/arrow_down_double_new.png");
+    this.load.image("arrow_left_double", "assets/arrow_left_double_new.png");
+    this.load.image("arrow_right_double", "assets/arrow_right_double_new.png");
 
     // Load card images from folder
     CARD_LIBRARY.forEach(card => {
