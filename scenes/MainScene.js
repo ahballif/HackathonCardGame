@@ -58,7 +58,7 @@ export default class MainScene extends Phaser.Scene {
     const card = new Card(this, 400, 400, example);
 
 
-    this.createGrid(100, 100, 50, 50, 5, 5);
+    this.createGrid(100, 200, 150, 150, 5, 5);
   }
 
 
