@@ -13,25 +13,30 @@ export default class Card extends Phaser.GameObjects.Container {
 
   // this function is called by the drawCard function
   addArrows(push) {
-    const directions = ["up", "right", "down", "left"];
-    const offsets = {
-      up: [0, -55],
-      right: [40, 0],
-      down: [0, 55],
-      left: [-40, 0]
-    };
+  const cardW = this.cardImage.displayWidth;
+  const cardH = this.cardImage.displayHeight;
 
-    for (let i = 0; i < 4; i++) {
-      const val = Number(push[i]);
-      if (val > 0) {
-        const dir = directions[i];
-        const key = `arrow_${dir}${val === 2 ? "_double" : ""}`;
-        const arrow = this.scene.add.image(offsets[dir][0], offsets[dir][1], key);
-        arrow.setDisplaySize(25, 25);
-        this.add(arrow);
-      }
+  const directions = ["up", "right", "down", "left"];
+  const offsets = {
+    up: [0, -cardH * 0.45],
+    right: [cardW * 0.38, 0],
+    down: [0, cardH * 0.45],
+    left: [-cardW * 0.38, 0]
+  };
+
+  for (let i = 0; i < 4; i++) {
+    const val = Number(push[i]);
+    if (val > 0) {
+      const dir = directions[i];
+      const key = `arrow_${dir}${val === 2 ? "_double" : ""}`;
+      const arrow = this.scene.add.image(offsets[dir][0], offsets[dir][1], key);
+      arrow.setDisplaySize(25, 25);
+      this.add(arrow);
     }
   }
+}
+
+
 
 
   drawCard(screenwidth, screenheight) {
