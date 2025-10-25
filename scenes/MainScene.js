@@ -45,10 +45,14 @@ export default class MainScene extends Phaser.Scene {
 
     // set up the players
 
-    const p1deck = [] // deck of all unflipped cards
-    const p1hand = []
-    const p2deck = []
-    const p2hand = []
+    // For testing: pick random cards
+const p1hand = Phaser.Utils.Array.Shuffle(CARD_LIBRARY).slice(0, 5);
+const p2hand = Phaser.Utils.Array.Shuffle(CARD_LIBRARY).slice(5, 10);
+
+// Create both hands
+this.createHand(p1hand, 400, 700, false); // bottom hand
+this.createHand(p2hand, 400, 100, false);  // top hand
+
 
     this.turnIsP1 = true;
     
@@ -64,4 +68,20 @@ export default class MainScene extends Phaser.Scene {
     // Create and show card in center
     const card = new Card(this, 400, 400, example);
   }
+  createHand(cards, centerX, y, flipped) {
+  const spacing = 120; // horizontal distance between cards
+  const totalWidth = (cards.length - 1) * spacing;
+  const startX = centerX - totalWidth / 2;
+
+  cards.forEach((cardData, i) => {
+    const x = startX + i * spacing;
+    const card = new Card(this, x, y, cardData);
+
+    if (flipped) {
+      // Flip vertically (for top player)
+      card.setScale(-1, -1);
+    }
+  });
+}
+
 }
