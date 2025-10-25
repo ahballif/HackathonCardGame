@@ -14,6 +14,124 @@
   <div id="game-container"></div>
   <div class="instructions">Click a card to select it, then click a highlighted tile to place it. Refresh to reset.</div>
   <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+
+  <!-- Firebase Libraries -->
+<script type="module">
+  // Import the Firebase functions you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // Your Firebase config (paste yours here)
+  const firebaseConfig = {
+    apiKey: "AIzaSyA5L-U8Zi8TFpSdgEm9l758tBjQmOfnBIk",
+    authDomain: "hackathoncardgame.firebaseapp.com",
+    databaseURL: "https://hackathoncardgame-default-rtdb.firebaseio.com",
+    projectId: "hackathoncardgame",
+    storageBucket: "hackathoncardgame.firebasestorage.app",
+    messagingSenderId: "1004601802369",
+    appId: "1:1004601802369:web:6203ab8d3bb042fcba5780",
+    measurementId: "G-HMBZBTH736"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  console.log("🔥 Firebase connected");
+
+
+  // The code for joining the game
+
+  import {
+  collection, addDoc, onSnapshot, query, where
+  } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const gamesCol = collection(db, "games");
+
+  const createGameBtn = document.getElementById("createGameBtn");
+  const playerNameInput = document.getElementById("playerNameInput");
+
+  createGameBtn.onclick = async () => {
+    const name = playerNameInput.value.trim();
+    if (!name) return alert("Enter your name first!");
+
+    await addDoc(gamesCol, {
+      status: "waiting",
+      playerX: name,
+      playerO: null,
+      board: ["", "", "", "", "", "", "", "", ""],
+      turn: "X",
+      createdAt: Date.now()
+    });
+
+    alert("Game created! Waiting for another player to join.");
+  };
+
+
+// Listen for all waiting games and update the list in real time
+const gamesList = document.getElementById("gamesList");
+
+const q = query(gamesCol, where("status", "==", "waiting"));
+
+onSnapshot(q, (snapshot) => {
+  gamesList.innerHTML = ""; // Clear current list
+
+  snapshot.forEach((doc) => {
+    const game = doc.data();
+    const li = document.createElement("li");
+
+    li.textContent = `Game by ${game.playerX}`;
+    li.style.cursor = "pointer";
+
+    // When clicked, attempt to join the game
+    li.onclick = () => joinGame(doc.id, game);
+
+    gamesList.appendChild(li);
+  });
+});
+
+
+// This is the code for joining a game. 
+
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+async function joinGame(gameId, gameData) {
+  const name = playerNameInput.value.trim();
+  if (!name) return alert("Enter your name first!");
+
+  if (!confirm(`Join game with ${gameData.playerX}?`)) return;
+
+  const gameRef = doc(db, "games", gameId);
+
+  await updateDoc(gameRef, {
+    playerO: name,
+    status: "active"
+  });
+
+  alert("Joined game! Starting match...");
+  
+  // Here is where you will load your game screen
+  // For now, just log it:
+  console.log("You are Player O in game:", gameId);
+}
+
+
+</script>
+
+
+<div>
+  <input id="playerNameInput" placeholder="Enter your name" />
+  <button id="createGameBtn">Create Game</button>
+</div>
+
+<div>
+  <h3>Available Games:</h3>
+  <ul id="gamesList"></ul>
+</div>
+
+
+
+
   <script src="main.js"></script>
 </body>
 </html>
