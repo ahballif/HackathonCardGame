@@ -1,0 +1,79 @@
+<!-- Save as demo-dag.html and open in a browser -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Maximum-edge DAG (n=6)</title>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="200" viewBox="0 0 900 200">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#222"></path>
+    </marker>
+    <style>
+      .node { fill: #fff; stroke: #222; stroke-width: 2px; }
+      .label { font: 14px sans-serif; text-anchor: middle; dominant-baseline: central; }
+      .edge { stroke: #222; stroke-width: 1.4px; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <!-- nodes coordinates (6 nodes horizontally) -->
+  <!-- adjust x positions to change spacing -->
+  <g id="nodes">
+    <!-- node 1 -->
+    <circle class="node" cx="90"  cy="100" r="18"/>
+    <text class="label" x="90"  y="100">1</text>
+    <!-- node 2 -->
+    <circle class="node" cx="210" cy="100" r="18"/>
+    <text class="label" x="210" y="100">2</text>
+    <!-- node 3 -->
+    <circle class="node" cx="330" cy="100" r="18"/>
+    <text class="label" x="330" y="100">3</text>
+    <!-- node 4 -->
+    <circle class="node" cx="450" cy="100" r="18"/>
+    <text class="label" x="450" y="100">4</text>
+    <!-- node 5 -->
+    <circle class="node" cx="570" cy="100" r="18"/>
+    <text class="label" x="570" y="100">5</text>
+    <!-- node 6 -->
+    <circle class="node" cx="690" cy="100" r="18"/>
+    <text class="label" x="690" y="100">6</text>
+  </g>
+
+  <!-- Draw all forward edges (i -> j for i<j) -->
+  <!-- We draw slightly curved paths to avoid overplotting -->
+  <g id="edges">
+    <!-- from 1 -->
+    <path class="edge" d="M108,100 C150,60 180,60 192,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M108,100 C230,50 300,50 312,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M108,100 C350,40 430,40 442,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M108,100 C470,30 540,30 552,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M108,100 C590,20 660,20 672,100" marker-end="url(#arrow)" />
+
+    <!-- from 2 -->
+    <path class="edge" d="M228,100 C270,70 300,70 312,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M228,100 C320,60 410,60 422,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M228,100 C440,50 520,50 532,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M228,100 C560,40 640,40 652,100" marker-end="url(#arrow)" />
+
+    <!-- from 3 -->
+    <path class="edge" d="M348,100 C390,75 420,75 432,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M348,100 C460,65 520,65 532,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M348,100 C560,55 620,55 632,100" marker-end="url(#arrow)" />
+
+    <!-- from 4 -->
+    <path class="edge" d="M468,100 C510,80 540,80 552,100" marker-end="url(#arrow)" />
+    <path class="edge" d="M468,100 C590,70 620,70 632,100" marker-end="url(#arrow)" />
+
+    <!-- from 5 -->
+    <path class="edge" d="M588,100 C630,85 660,85 672,100" marker-end="url(#arrow)" />
+  </g>
+
+  <!-- caption -->
+  <text x="450" y="185" font-family="sans-serif" font-size="13" text-anchor="middle" fill="#333">
+    Maximum-edge DAG on n=6 vertices — edges = C(6,2) = 15
+  </text>
+</svg>
+</body>
+</html>

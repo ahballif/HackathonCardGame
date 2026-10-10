@@ -1,78 +1,70 @@
 export default class Card extends Phaser.GameObjects.Container {
-  constructor(scene, x, y, cardData, clickFunction, isPlayer1) {
+  constructor(scene, x, y, cardData, onClick, size = 100) {
     super(scene, x, y);
-    this.scene = scene;
     this.cardData = cardData;
-    this.effect = cardData.effect;
-    this.cardtype = cardData.push;
-    this.isPlayer1 = isPlayer1;
-
-    this.drawCard(100, 100);
-
-    this.clickFunction = clickFunction; // This is the function that gets called when you click on the card
-
-  }
-
-
-  // this function is called by the drawCard function
-  addArrows(push) {
-  const cardW = this.cardImage.displayWidth;
-  const cardH = this.cardImage.displayHeight;
-
-  const directions = ["up", "right", "down", "left"];
-  const offsets = {
-    up: [0, -cardH * 0.55],
-    right: [cardW * 0.48, 0],
-    down: [0, cardH * 0.55],
-    left: [-cardW * 0.48, 0]
-  };
-
-  for (let i = 0; i < 4; i++) {
-    const val = Number(push[i]);
-    if (val > 0) {
-      const dir = directions[i];
-      const key = `arrow_${dir}${val === 2 ? "_double" : ""}`;
-      const arrow = this.scene.add.image(offsets[dir][0], offsets[dir][1], key);
-      arrow.setDisplaySize(25, 25);
-      this.add(arrow);
-    }
-  }
-}
-
-
-
-
-  drawCard(screenwidth, screenheight) {
-    // Add card image
-    const rect = this.scene.add.graphics();
-    if (this.isPlayer1) {
-      rect.fillStyle(0xff0000, 1); // red, fully opaque
-    } else {
-      rect.fillStyle(0x0000ff, 1); // blue, fully opaque
-    }
-    rect.fillRect(-screenwidth/2, -screenwidth/2, screenwidth, screenheight); // x, y, width, height
-    this.add(rect);
-
-    this.cardImage = this.scene.add.image(0, 0, this.cardData.name);
-    this.cardImage.setDisplaySize(screenwidth*0.95, screenheight*0.95);
-    this.cardImage.setInteractive();          // makes it clickable
-    this.cardImage.on('pointerdown', () => {
-      this.clickFunction();
-    });
+    this.owner = cardData.owner;
+    this.arrows = [];
+    this.frame = scene.add.rectangle(0, 0, size + 8, size + 8, 0x152a30).setStrokeStyle(3, this.owner === 0 ? 0x7abfff : 0xff9979);
+    this.add(this.frame);
+    this.cardImage = scene.add.image(0, 0, cardData.name).setDisplaySize(size - 6, size - 6);
     this.add(this.cardImage);
-
-    // Add arrows on top
-    this.addArrows(this.cardData.push);
-
-    // Optional: name text below
-    // const text = scene.add.text(0, 90, this.cardData.name, {
-    //   fontSize: "12px",
-    //   color: "#fff",
-    //   align: "center"
-    // }).setOrigin(0.5);
-    // this.add(text);
-
-    this.scene.add.existing(this);
+    const positions = [[0, -size / 2 + 4], [size / 2 - 4, 0], [0, size / 2 - 4], [-size / 2 + 4, 0]];
+    ["up", "right", "down", "left"].forEach((direction, i) => {
+      const force = Number(cardData.push[i]);
+      if (!force) return;
+      const [ax, ay] = positions[i];
+      this.add(scene.add.circle(ax, ay, 13, 0x102229, 0.95));
+      const arrow = scene.add.image(ax, ay, `arrow_${direction}${force === 2 ? "_double" : ""}`).setDisplaySize(22, 22);
+      arrow.direction = direction;
+      arrow.baseScale = { x: arrow.scaleX, y: arrow.scaleY };
+      this.arrows.push(arrow);
+      this.add(arrow);
+    });
+    if (onClick) {
+      this.cardImage.setInteractive({ useHandCursor: true }).on("pointerdown", onClick);
+      this.cardImage.on("pointerover", () => { if (!scene.resolving && !this.selected) this.animateLift(1.04, -2); });
+      this.cardImage.on("pointerout", () => { if (!scene.resolving) this.animateLift(this.selected ? 1.08 : 1, 0); });
+    }
+    scene.add.existing(this);
   }
 
+  setSelected(selected) {
+    this.selected = selected;
+    this.frame.setStrokeStyle(selected ? 4 : 3, selected ? 0xffdc83 : this.owner === 0 ? 0x7abfff : 0xff9979);
+    this.animateLift(selected ? 1.08 : 1, 0);
+    return this;
+  }
+
+  animateLift(scale, angle) {
+    this.scene.tweens.killTweensOf(this);
+    this.scene.tweens.add({ targets: this, scaleX: scale, scaleY: scale, angle, duration: 170, ease: "Back.Out" });
+  }
+
+  setOutOfPlay(inactive) {
+    this.outOfPlay = inactive;
+    if (inactive) this.cardImage.setTint(0x969b9e);
+    else this.cardImage.clearTint();
+    this.frame.setStrokeStyle(3, inactive ? 0x929b9e : this.owner === 0 ? 0x7abfff : 0xff9979);
+    this.arrows.forEach(arrow => inactive ? arrow.setTint(0x969b9e) : arrow.clearTint());
+    this.setAlpha(inactive ? 0.68 : 1);
+    return this;
+  }
+
+  setArrowsActive(active) {
+    this.arrows.forEach(arrow => {
+      this.scene.tweens.killTweensOf(arrow);
+      arrow.setScale(arrow.baseScale.x, arrow.baseScale.y).setAlpha(1);
+      if (active) this.scene.tweens.add({ targets: arrow, scaleX: arrow.baseScale.x * 1.16,
+        scaleY: arrow.baseScale.y * 1.16, alpha: 0.7, duration: 620, ease: "Sine.InOut", yoyo: true, repeat: -1 });
+    });
+    return this;
+  }
+
+  destroy(fromScene) {
+    if (this.scene) {
+      this.scene.tweens.killTweensOf(this);
+      this.arrows.forEach(arrow => this.scene.tweens.killTweensOf(arrow));
+    }
+    super.destroy(fromScene);
+  }
 }

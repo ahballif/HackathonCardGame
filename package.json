@@ -1,0 +1,6 @@
+{
+  "name": "history-heroes-picnic",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test", "start": "node server/server.js" }
+}

@@ -1,63 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>History Heroes Jam!</title>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3/dist/phaser.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>History Heroes · Picnic Wrestle</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js"></script>
     <script src="data/library.js"></script>
     <script type="module" src="main.js"></script>
     <style>
-      body {
-        margin: 0;
-        background-color: #111;
-        font-family: sans-serif;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      #game-container {
-        margin: 20px 0;
-      }
-
-      #game-container canvas {
-        display: block;
-        border: 2px solid white;
-        border-radius: 10px;
-        box-shadow: 0 0 10px #444;
-      }
-
-      h1, p {
-        margin: 10px;
-      }
-
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #09191e; font-family: system-ui, sans-serif; color: #e6eee7; }
+      main { max-width: 1140px; margin: auto; padding: 24px 20px 32px; }
+      header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
+      .eyebrow { color: #9bb4b3; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; }
+      h1 { margin: 6px 0 0; font-size: clamp(22px, 4vw, 32px); font-weight: 650; }
+      .tag { color: #ffdc83; font-size: 12px; border: 1px solid #476064; border-radius: 20px; padding: 8px 14px; white-space: nowrap; }
+      #game-container { width: 100%; aspect-ratio: 1100 / 820; overflow: hidden; border-radius: 16px; border: 1px solid #385458; box-shadow: 0 24px 80px #0005; }
+      #game-container canvas { display: block; }
+      #loading-status { color: #ffdc83; }
+      [hidden] { display: none !important; }
+      details { margin-top: 20px; border: 1px solid #2e494e; border-radius: 12px; padding: 16px 20px; background: #12262b; }
+      summary { cursor: pointer; font-weight: 600; }
+      .rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; font-size: 14px; line-height: 1.7; color: #adc3be; }
+      h2 { font-size: 15px; color: #ffdc83; margin-bottom: 0; }
+      footer { margin-top: 22px; color: #7e9c9e; font-size: 12px; }
+      button, input, select { font: inherit; }
+      select, #room-code { color: #e6eee7; background: #09191e; border: 1px solid #587377; border-radius: 8px; padding: 9px; max-width: 240px; }
+      .toolbar { flex-wrap: wrap; }
+      #room-code { width: 110px; text-transform: uppercase; }
+      #room-invite { color: #ffdc83; }
+      button { cursor: pointer; color: #e6eee7; background: #27454b; border: 1px solid #587377; border-radius: 8px; padding: 9px 14px; }
+      button:disabled { opacity: 0.4; cursor: default; }
+      button[aria-pressed="true"] { border-color: #ffdc83; box-shadow: 0 0 0 2px #ffdc8355; }
+      .toolbar { display: flex; align-items: center; gap: 14px; margin: 12px 0; font-size: 13px; color: #adc3be; }
+      dialog { width: min(900px, 94vw); max-height: 90vh; color: #e6eee7; background: #12262b; border: 1px solid #587377; border-radius: 16px; padding: 22px; }
+      dialog::backdrop { background: #031216d9; }
+      dialog h2 { margin: 0; font-size: 24px; }
+      #deck-search { width: 100%; padding: 10px; border-radius: 8px; background: #09191e; border: 1px solid #587377; color: #e6eee7; margin: 12px 0; }
+      #deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; max-height: 45vh; overflow-y: auto; padding: 4px; }
+      .deck-card { display: flex; flex-direction: column; align-items: center; gap: 7px; font-size: 11px; padding: 8px; }
+      .deck-card img { width: 75px; height: 75px; object-fit: contain; }
+      .deck-card small { color: #ffdc83; }
+      #deck-status { min-height: 20px; color: #ffdc83; }
+      @media (max-width: 700px) { main { padding: 14px 8px; } .rules { grid-template-columns: 1fr; gap: 0; } .tag { display: none; } }
     </style>
   </head>
-
   <body>
-    <!-- Title at top -->
-    <h1>History Heroes Jam!</h1>
-
-    <!-- Phaser game container -->
-    <div id="game-container"></div>
-
-    <!-- Paragraph / instructions at bottom -->
-    <p>
-      The object of the game is to end with one of your cards occupying the gem tile.
-      Setup: The hand of cards on the left is Player 1, the hand of cards on the right is Player 2
-      
-      When it is your turn, click on one of your cards in your hand. The black squares show you where you can play.
-      The arrows on the card allow you to push your opponents card in that direction. 
-      If two arrows are pushing against each other neither card will move, unless on the arrows is a double arrow. 
-      
-      The picnic blanket tiles are the playable spaces. Cards cannot be placed on the grass, but they can be pushed onto the grass. 
-      No cards can go in the dirt. 
-
-    </p>
-
-    <p><strong>Credits: </strong>
-    Talmage Kay, Emma Ballif, Addison Ballif
-    </p>
+    <main>
+      <header><div><div class="eyebrow">A tabletop clash through time</div><h1>History Heroes: Picnic Wrestle</h1></div><span class="tag">2 players · local duel</span></header>
+      <p id="loading-status" role="status">Setting the picnic table…</p>
+      <div class="toolbar"><button id="deck-builder-open" type="button">Build decks</button><label for="debug-map">Debug map</label><select id="debug-map"><option value="">Random map</option></select><span>16 heroes per player</span></div>
+      <div class="toolbar"><button id="room-create" type="button">Create online room</button><input id="room-code" maxlength="6" placeholder="Code" aria-label="Room code" /><button id="room-join" type="button">Join room</button><button id="room-leave" type="button" hidden>Leave room</button><a id="room-invite" hidden target="_blank" rel="noopener">Invite link</a><span id="online-status" role="status">Local play · Online hands are visible to both players</span></div>
+      <div class="toolbar"><button id="match-find" type="button">Find balanced match</button><select id="match-deck" aria-label="Deck for matchmaking"><option value="0">My Blue deck</option><option value="1">My Red deck</option></select><button id="match-cancel" type="button" hidden>Cancel search</button><span id="match-status" role="status">Deck and player strength matching · random 3×3 board with 3 gems</span><span id="profile-status"></span></div>
+      <div id="game-container" aria-label="Two-player History Heroes card game"></div>
+      <details open>
+        <summary>How to play</summary>
+        <div class="rules">
+          <section><h2>01 · Choose your hero</h2><p>Players alternate turns. Click a card in your hand, then a gold move button. Choose a different card any time before moving. Click the selected card again or press Esc to cancel.</p></section>
+          <section><h2>02 · Wrestle for the gems</h2><p>The + places a hero on an empty picnic tile. You must push heroes onto gems. A double arrow beats a single arrow; equal strength blocks. Your hero must beat every defender in a push chain. Cards pushed onto grass turn grey and become immovable blockers. No card can enter dirt or leave the board.</p></section>
+          <section><h2>03 · Hold your ground</h2><p>Every new match rolls a map with one to three gems. Each move draws one replacement until the deck is empty. The match ends as soon as the picnic fills or either player has no legal moves. Whoever controls the most gems wins. Equal scores are a draw.</p></section>
+        </div>
+      </details>
+      <footer>Created by Talmage Kay, Emma Ballif & Addison Ballif · BYUI Hackathon 2025</footer>
+    </main>
+    <dialog id="deck-builder" aria-labelledby="deck-title">
+      <header><h2 id="deck-title">Choose your heroes</h2><button id="deck-close" type="button">Cancel</button></header>
+      <p>Pick 16 different heroes for each player. Both players may use the same hero. Saving starts a new match.</p>
+      <div class="toolbar"><button type="button" data-deck-player="0">Player 1 · Blue</button><button type="button" data-deck-player="1">Player 2 · Red</button><span id="deck-count" aria-live="polite"></span></div>
+      <input id="deck-search" type="search" placeholder="Search heroes" aria-label="Search heroes" />
+      <div id="deck-grid"></div>
+      <p id="deck-status" role="status"></p>
+      <div class="toolbar"><button id="deck-random" type="button">Randomize this deck</button><button id="deck-clear" type="button">Clear this deck</button><button id="deck-save" type="button">Save decks & play</button></div>
+    </dialog>
   </body>
 </html>
